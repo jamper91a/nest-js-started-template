@@ -34,13 +34,12 @@ async function bootstrap() {
   );
 
   await app.register(compression, { encodings: ['gzip', 'deflate'] });
-  await app.listen(configService.get('http.port'));
-
   const config = new DocumentBuilder()
     .setTitle('NestJs Started Template')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  await app.listen(configService.get('http.port'));
 }
 bootstrap();

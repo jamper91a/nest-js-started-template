@@ -10,7 +10,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 @Table({
   tableName: 'users',
 })
