@@ -13,6 +13,7 @@ import { GroupsModule } from './api/groups/groups.module';
 import { CompaniesModule } from './api/companies/companies.module';
 import { ConsolidatedInventoriesModule } from './api/consolidated-inventories/consolidated-inventories.module';
 import { DealersModule } from './api/dealers/dealers.module';
+import { ReturnsModule } from './api/returns/returns.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { DealersModule } from './api/dealers/dealers.module';
     CompaniesModule,
     ConsolidatedInventoriesModule,
     DealersModule,
+    ReturnsModule,
   ],
   controllers: [],
   providers: [

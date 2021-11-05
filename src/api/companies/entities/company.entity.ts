@@ -6,7 +6,9 @@ import { Dealer } from '../../dealers/entities/dealer.entity';
 export class Company extends Model {
   @Column name: string;
   @IsUrl
-  @Column
+  @Column({
+    allowNull: true,
+  })
   photo?: string;
 
   @HasOne(() => User)
