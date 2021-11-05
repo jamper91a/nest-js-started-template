@@ -24,6 +24,7 @@ import { InventoryErpModule } from './api/inventory-erp/inventory-erp.module';
 import { ProductsModule } from './api/products/products.module';
 import { ProductsZonesModule } from './api/products-zones/products-zones.module';
 import { ReportsModule } from './api/reports/reports.module';
+import { ReportsProductsZonesModule } from './api/reports-products-zones/reports-products-zones.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { ReportsModule } from './api/reports/reports.module';
     ProductsModule,
     ProductsZonesModule,
     ReportsModule,
+    ReportsProductsZonesModule,
   ],
   controllers: [],
   providers: [

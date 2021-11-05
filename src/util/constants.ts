@@ -13,4 +13,10 @@ export const Constants = {
       MISSING: 'MISSING',
     },
   },
+  reports: {
+    type: {
+      DIFFERENCE_PHYSICAL_UNITS: 'DIFFERENCE_PHYSICAL_UNITS',
+      SOLD_UNITS: 'SOLD_UNITS',
+    },
+  },
 };
