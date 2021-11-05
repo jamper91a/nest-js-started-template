@@ -22,6 +22,7 @@ import { InventoriesModule } from './api/inventories/inventories.module';
 import { InventoriesProductsModule } from './api/inventories-products/inventories-products.module';
 import { InventoryErpModule } from './api/inventory-erp/inventory-erp.module';
 import { ProductsModule } from './api/products/products.module';
+import { ProductsZonesModule } from './api/products-zones/products-zones.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { ProductsModule } from './api/products/products.module';
     InventoriesProductsModule,
     InventoryErpModule,
     ProductsModule,
+    ProductsZonesModule,
   ],
   controllers: [],
   providers: [

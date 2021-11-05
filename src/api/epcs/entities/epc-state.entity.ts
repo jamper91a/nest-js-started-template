@@ -12,3 +12,11 @@ export const epcStates: EpcStateEntity[] = [
   { id: 3, name: Constants.epc.states.SOLD },
   { id: 4, name: Constants.epc.states.MISSING },
 ];
+
+export const epcStatesId = {
+  NOT_ASSIGNED: 0,
+  ASSIGNED: 1,
+  USED: 2,
+  SOLD: 3,
+  MISSING: 4,
+};
