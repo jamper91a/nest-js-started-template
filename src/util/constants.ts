@@ -4,4 +4,13 @@ export const Constants = {
       secret: 'secret',
     },
   },
+  epc: {
+    states: {
+      NOT_ASSIGNED: 'NOT_ASSIGNED',
+      ASSIGNED: 'ASSIGNED',
+      USED: 'USED',
+      SOLD: 'SOLD',
+      MISSING: 'MISSING',
+    },
+  },
 };

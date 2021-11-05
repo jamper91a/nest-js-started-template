@@ -11,9 +11,8 @@ import {
 } from 'sequelize-typescript';
 import * as bcrypt from 'bcryptjs';
 import { Group } from '../../groups/entities/group.entity';
-@Table({
-  tableName: 'users',
-})
+
+@Table({ tableName: 'users' })
 export class User extends Model {
   @Column
   name: string;
