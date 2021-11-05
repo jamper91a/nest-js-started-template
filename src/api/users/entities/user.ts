@@ -3,7 +3,6 @@ import {
   BeforeUpdate,
   BelongsTo,
   Column,
-  DataType,
   ForeignKey,
   IsEmail,
   Model,
@@ -15,7 +14,7 @@ import { Group } from '../../groups/entities/group.entity';
 @Table({
   tableName: 'users',
 })
-export class UserEntity extends Model {
+export class User extends Model {
   @Column
   name: string;
   @IsEmail
@@ -43,7 +42,7 @@ export class UserEntity extends Model {
 
   @BeforeCreate
   @BeforeUpdate
-  static hashPassword(user: UserEntity) {
+  static hashPassword(user: User) {
     if (user.password && user.password !== user.previous('password')) {
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(user.password, salt);
