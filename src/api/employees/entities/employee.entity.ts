@@ -2,23 +2,25 @@ import {
   BelongsTo,
   Column,
   ForeignKey,
-  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
-import { User } from '../../users/entities/user.entitity';
 import { Company } from '../../companies/entities/company.entity';
+import { User } from '../../users/entities/user.entitity';
 
-@Table({ tableName: 'dealers' })
-export class Dealer extends Model {
-  @Column name: string;
+@Table({ tableName: 'employees' })
+export class Employee extends Model {
+  @ForeignKey(() => Company)
+  @Column
+  companyId: number;
 
-  @HasMany(() => Company)
-  companies: Company[];
+  @BelongsTo(() => Company)
+  company: Company;
 
   @ForeignKey(() => User)
   @Column
   userId: number;
+
   @BelongsTo(() => User)
   user: User;
 }

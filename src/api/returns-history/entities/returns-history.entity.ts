@@ -11,7 +11,7 @@ import { User } from '../../users/entities/user.entitity';
 export class ReturnsHistory extends Model {
   @ForeignKey(() => User)
   @Column
-  user_id: number;
+  userId: number;
   @BelongsTo(() => User)
   user: User;
 }
