@@ -14,6 +14,7 @@ import { CompaniesModule } from './api/companies/companies.module';
 import { ConsolidatedInventoriesModule } from './api/consolidated-inventories/consolidated-inventories.module';
 import { DealersModule } from './api/dealers/dealers.module';
 import { ReturnsModule } from './api/returns/returns.module';
+import { ReturnsHistoryModule } from './api/returns-history/returns-history.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ReturnsModule } from './api/returns/returns.module';
     ConsolidatedInventoriesModule,
     DealersModule,
     ReturnsModule,
+    ReturnsHistoryModule,
   ],
   controllers: [],
   providers: [
