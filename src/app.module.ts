@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './api/users/users.module';
 import configuration from '../config/configuration';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { GroupsModule } from './api/groups/groups.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     }),
     AuthModule,
     UsersModule,
+    GroupsModule,
   ],
   controllers: [],
   providers: [

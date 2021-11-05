@@ -11,10 +11,11 @@ import {
   Unique,
 } from 'sequelize-typescript';
 import * as bcrypt from 'bcryptjs';
+import { Group } from '../../groups/entities/group.entity';
 @Table({
   tableName: 'users',
 })
-export class UsersEntity extends Model {
+export class UserEntity extends Model {
   @Column
   name: string;
   @IsEmail
@@ -33,16 +34,16 @@ export class UsersEntity extends Model {
   @Column
   active: boolean;
 
-  // @ForeignKey(() => GroupsEntity)
-  // @Column
-  // groupId: number;
-  //
-  // @BelongsTo(() => GroupsEntity)
-  // group: GroupsEntity;
+  @ForeignKey(() => Group)
+  @Column
+  groupId: number;
+
+  @BelongsTo(() => Group)
+  group: Group;
 
   @BeforeCreate
   @BeforeUpdate
-  static hashPassword(user: UsersEntity) {
+  static hashPassword(user: UserEntity) {
     if (user.password && user.password !== user.previous('password')) {
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(user.password, salt);
