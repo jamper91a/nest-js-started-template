@@ -1,0 +1,54 @@
+import {
+  BeforeCreate,
+  BeforeUpdate,
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  IsEmail,
+  Model,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
+import * as bcrypt from 'bcrypt';
+@Table({
+  tableName: 'users',
+})
+export class UsersEntity extends Model {
+  @Column
+  name: string;
+  @IsEmail
+  @Unique({
+    name: 'DuplicateEmail',
+    msg: 'Email already exits',
+  })
+  @Column
+  username: string;
+  @Column
+  password: string;
+  @Column
+  username_rfdi?: string;
+  @Column
+  password_rfdi?: string;
+  @Column
+  active: boolean;
+
+  // @ForeignKey(() => GroupsEntity)
+  // @Column
+  // groupId: number;
+  //
+  // @BelongsTo(() => GroupsEntity)
+  // group: GroupsEntity;
+
+  @BeforeCreate
+  @BeforeUpdate
+  static hashPassword(user: UsersEntity) {
+    if (user.password && user.password !== user.previous('password')) {
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(user.password, salt);
+      user.password = hash;
+    } else {
+      user.password = user.previous('password');
+    }
+  }
+}

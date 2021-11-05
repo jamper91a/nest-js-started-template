@@ -6,7 +6,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './api/users/users.module';
 import configuration from '../config/configuration';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
