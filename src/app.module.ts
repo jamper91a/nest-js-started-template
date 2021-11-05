@@ -11,6 +11,7 @@ import configuration from '../config/configuration';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { GroupsModule } from './api/groups/groups.module';
 import { CompaniesModule } from './api/companies/companies.module';
+import { ConsolidatedInventoriesModule } from './api/consolidated-inventories/consolidated-inventories.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CompaniesModule } from './api/companies/companies.module';
     UsersModule,
     GroupsModule,
     CompaniesModule,
+    ConsolidatedInventoriesModule,
   ],
   controllers: [],
   providers: [
