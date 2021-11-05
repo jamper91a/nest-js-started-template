@@ -16,6 +16,7 @@ import { DealersModule } from './api/dealers/dealers.module';
 import { ReturnsModule } from './api/returns/returns.module';
 import { ReturnsHistoryModule } from './api/returns-history/returns-history.module';
 import { EmployeesModule } from './api/employees/employees.module';
+import { EmployeesInventoriesModule } from './api/employees-inventories/employees-inventories.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { EmployeesModule } from './api/employees/employees.module';
     ReturnsModule,
     ReturnsHistoryModule,
     EmployeesModule,
+    EmployeesInventoriesModule,
   ],
   controllers: [],
   providers: [

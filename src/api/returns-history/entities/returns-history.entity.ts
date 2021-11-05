@@ -7,7 +7,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from '../../users/entities/user.entitity';
 
-@Table({ tableName: 'returns-history' })
+@Table({ tableName: 'returnsHistory' })
 export class ReturnsHistory extends Model {
   @ForeignKey(() => User)
   @Column
