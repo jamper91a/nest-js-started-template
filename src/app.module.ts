@@ -20,6 +20,7 @@ import { EmployeesInventoriesModule } from './api/employees-inventories/employee
 import { EpcsModule } from './api/epcs/epcs.module';
 import { InventoriesModule } from './api/inventories/inventories.module';
 import { InventoriesProductsModule } from './api/inventories-products/inventories-products.module';
+import { InventoryErpModule } from './api/inventory-erp/inventory-erp.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { InventoriesProductsModule } from './api/inventories-products/inventorie
     EpcsModule,
     InventoriesModule,
     InventoriesProductsModule,
+    InventoryErpModule,
   ],
   controllers: [],
   providers: [
