@@ -18,6 +18,7 @@ import { ReturnsHistoryModule } from './api/returns-history/returns-history.modu
 import { EmployeesModule } from './api/employees/employees.module';
 import { EmployeesInventoriesModule } from './api/employees-inventories/employees-inventories.module';
 import { EpcsModule } from './api/epcs/epcs.module';
+import { InventoriesModule } from './api/inventories/inventories.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { EpcsModule } from './api/epcs/epcs.module';
     EmployeesModule,
     EmployeesInventoriesModule,
     EpcsModule,
+    InventoriesModule,
   ],
   controllers: [],
   providers: [
