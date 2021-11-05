@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReturnDto } from './dto/create-return.dto';
 import { UpdateReturnDto } from './dto/update-return.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Return } from './entities/return.entity';
 
 @Injectable()
 export class ReturnsService {
+  constructor(
+    @InjectModel(Return)
+    private returnModel: typeof Return,
+  ) {}
+
   create(createReturnDto: CreateReturnDto) {
     return 'This action adds a new return';
   }

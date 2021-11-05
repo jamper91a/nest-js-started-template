@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Employee } from './entities/employee.entity';
 
 @Injectable()
 export class EmployeesService {
+  constructor(
+    @InjectModel(Employee)
+    private employeeModel: typeof Employee,
+  ) {}
+
   create(createEmployeeDto: CreateEmployeeDto) {
     return 'This action adds a new employee';
   }

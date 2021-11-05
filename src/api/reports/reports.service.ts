@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Report } from './entities/report.entity';
 
 @Injectable()
 export class ReportsService {
+  constructor(
+    @InjectModel(Report)
+    private reportModel: typeof Report,
+  ) {}
+
   create(createReportDto: CreateReportDto) {
     return 'This action adds a new report';
   }

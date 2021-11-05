@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from './entities/users.entity';
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from './entities/user.entitity';
 
 @Injectable()
 export class UsersService {
-  async findOne(username: string): Promise<UserEntity | undefined> {
+  constructor(
+    @InjectModel(User)
+    private userModel: typeof User,
+  ) {}
+
+  async findOne(username: string): Promise<User | undefined> {
     return null;
   }
 }

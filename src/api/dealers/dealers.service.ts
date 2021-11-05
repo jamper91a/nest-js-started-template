@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDealerDto } from './dto/create-dealer.dto';
 import { UpdateDealerDto } from './dto/update-dealer.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Dealer } from './entities/dealer.entity';
 
 @Injectable()
 export class DealersService {
+  constructor(
+    @InjectModel(Dealer)
+    private dealerModel: typeof Dealer,
+  ) {}
+
   create(createDealerDto: CreateDealerDto) {
     return 'This action adds a new dealer';
   }

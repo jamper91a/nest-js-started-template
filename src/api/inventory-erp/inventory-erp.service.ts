@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateInventoryErpDto } from './dto/create-inventory-erp.dto';
 import { UpdateInventoryErpDto } from './dto/update-inventory-erp.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { InventoryErp } from './entities/inventory-erp.entity';
 
 @Injectable()
 export class InventoryErpService {
+  constructor(
+    @InjectModel(InventoryErp)
+    private inventoryErpModel: typeof InventoryErp,
+  ) {}
+
   create(createInventoryErpDto: CreateInventoryErpDto) {
     return 'This action adds a new inventoryErp';
   }

@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEpcDto } from './dto/create-epc.dto';
 import { UpdateEpcDto } from './dto/update-epc.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Epc } from './entities/epc.entity';
 
 @Injectable()
 export class EpcsService {
+  constructor(
+    @InjectModel(Epc)
+    private epcModel: typeof Epc,
+  ) {}
+
   create(createEpcDto: CreateEpcDto) {
     return 'This action adds a new epc';
   }

@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReturnsHistoryDto } from './dto/create-returns-history.dto';
 import { UpdateReturnsHistoryDto } from './dto/update-returns-history.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { ReturnsHistory } from './entities/returns-history.entity';
 
 @Injectable()
 export class ReturnsHistoryService {
+  constructor(
+    @InjectModel(ReturnsHistory)
+    private returnsHistoryModel: typeof ReturnsHistory,
+  ) {}
+
   create(createReturnsHistoryDto: CreateReturnsHistoryDto) {
     return 'This action adds a new returnsHistory';
   }

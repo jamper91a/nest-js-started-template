@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateConsolidatedInventoryDto } from './dto/create-consolidated-inventory.dto';
 import { UpdateConsolidatedInventoryDto } from './dto/update-consolidated-inventory.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { ConsolidatedInventory } from './entities/consolidated-inventory.entity';
 
 @Injectable()
 export class ConsolidatedInventoriesService {
+  constructor(
+    @InjectModel(ConsolidatedInventory)
+    private consolidatedInventoryModel: typeof ConsolidatedInventory,
+  ) {}
+
   create(createConsolidatedInventoryDto: CreateConsolidatedInventoryDto) {
     return 'This action adds a new consolidatedInventory';
   }
@@ -16,7 +23,10 @@ export class ConsolidatedInventoriesService {
     return `This action returns a #${id} consolidatedInventory`;
   }
 
-  update(id: number, updateConsolidatedInventoryDto: UpdateConsolidatedInventoryDto) {
+  update(
+    id: number,
+    updateConsolidatedInventoryDto: UpdateConsolidatedInventoryDto,
+  ) {
     return `This action updates a #${id} consolidatedInventory`;
   }
 

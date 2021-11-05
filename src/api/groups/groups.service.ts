@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Group } from './entities/group.entity';
 
 @Injectable()
 export class GroupsService {
+  constructor(
+    @InjectModel(Group)
+    private groupModel: typeof Group,
+  ) {}
+
   create(createGroupDto: CreateGroupDto) {
     return 'This action adds a new group';
   }
