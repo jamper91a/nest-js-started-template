@@ -60,6 +60,7 @@ export class ProductsZone extends Model {
     }
   }
 
+  // Check if this also work with bulk
   @BeforeUpdate
   static async productNoReturned(instance: ProductsZone) {
     if (instance.returnId > 1) {
