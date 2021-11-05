@@ -10,6 +10,8 @@ import compression from 'fastify-compress';
 import helmet from 'fastify-helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+declare const module: any;
+
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -35,11 +37,17 @@ async function bootstrap() {
 
   await app.register(compression, { encodings: ['gzip', 'deflate'] });
   const config = new DocumentBuilder()
-    .setTitle('NestJs Started Template')
+    .setTitle('Inventario Real')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   await app.listen(configService.get('http.port'));
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
+
 bootstrap();
