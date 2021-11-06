@@ -1,0 +1,24 @@
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Company } from '../../companies/entities/company.entity';
+import { Employee } from '../../employees/entities/employee.entity';
+
+@Table({ tableName: 'shops' })
+export class Shop extends Model {
+  @Column name: string;
+
+  @ForeignKey(() => Company)
+  @Column
+  companyId: number;
+  @BelongsTo(() => Company)
+  company: Company;
+
+  @HasMany(() => Employee)
+  employees: Employee[];
+}
