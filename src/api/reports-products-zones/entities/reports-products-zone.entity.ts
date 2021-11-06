@@ -1,10 +1,16 @@
-import { BelongsTo, Column, ForeignKey, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { Report } from '../../reports/entities/report.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 
 @Table({ tableName: 'reportsProductsZones' })
-export class ReportsProductsZone {
+export class ReportsProductsZone extends Model {
   @ForeignKey(() => Report)
   @Column
   reportId: number;

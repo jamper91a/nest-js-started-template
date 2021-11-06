@@ -1,4 +1,11 @@
-import { Column, HasOne, IsUrl, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  IsUrl,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { User } from '../../users/entities/user.entitity';
 import { Dealer } from '../../dealers/entities/dealer.entity';
 
@@ -11,8 +18,17 @@ export class Company extends Model {
   })
   photo?: string;
 
-  @HasOne(() => User)
+  @ForeignKey(() => User)
+  @Column
+  userId: number;
+
+  @BelongsTo(() => User)
   user: User;
-  @HasOne(() => Dealer)
+
+  @ForeignKey(() => Dealer)
+  @Column
+  dealerId: number;
+
+  @BelongsTo(() => Dealer)
   dealer: Dealer;
 }
