@@ -28,6 +28,7 @@ import { ReportsProductsZonesModule } from './api/reports-products-zones/reports
 import { SellsModule } from './api/sells/sells.module';
 import { SellsHistoryModule } from './api/sells-history/sells-history.module';
 import { ShopsModule } from './api/shops/shops.module';
+import { SuppliersModule } from './api/suppliers/suppliers.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { ShopsModule } from './api/shops/shops.module';
     SellsModule,
     SellsHistoryModule,
     ShopsModule,
+    SuppliersModule,
   ],
   controllers: [],
   providers: [

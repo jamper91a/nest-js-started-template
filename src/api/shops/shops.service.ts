@@ -8,7 +8,7 @@ import { Shop } from './entities/shop.entity';
 export class ShopsService {
   constructor(
     @InjectModel(Shop)
-    private sellModel: typeof Shop,
+    private shopModel: typeof Shop,
   ) {}
 
   create(createShopDto: CreateShopDto) {
