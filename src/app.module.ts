@@ -25,6 +25,7 @@ import { ProductsModule } from './api/products/products.module';
 import { ProductsZonesModule } from './api/products-zones/products-zones.module';
 import { ReportsModule } from './api/reports/reports.module';
 import { ReportsProductsZonesModule } from './api/reports-products-zones/reports-products-zones.module';
+import { SellsModule } from './api/sells/sells.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { ReportsProductsZonesModule } from './api/reports-products-zones/reports
     ProductsZonesModule,
     ReportsModule,
     ReportsProductsZonesModule,
+    SellsModule,
   ],
   controllers: [],
   providers: [
