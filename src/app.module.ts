@@ -31,6 +31,7 @@ import { ShopsModule } from './api/shops/shops.module';
 import { SuppliersModule } from './api/suppliers/suppliers.module';
 import { TransfersModule } from './api/transfers/transfers.module';
 import { TransfersProductsZonesModule } from './api/transfers-products-zones/transfers-products-zones.module';
+import { ZonesModule } from './api/zones/zones.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { TransfersProductsZonesModule } from './api/transfers-products-zones/tra
     SuppliersModule,
     TransfersModule,
     TransfersProductsZonesModule,
+    ZonesModule,
   ],
   controllers: [],
   providers: [
