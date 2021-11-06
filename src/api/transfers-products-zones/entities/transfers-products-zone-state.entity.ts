@@ -6,8 +6,8 @@ export class TransfersProductsZoneStateEntity {
 }
 
 export const transfersProductsZoneState: TransfersProductsZoneStateEntity[] = [
-  { id: false, name: Constants.transfersProductsZones.states.NOT_RECEIVED },
-  { id: true, name: Constants.transfersProductsZones.states.RECEIVED },
+  { id: false, name: Constants.transfersProductsZone.states.NOT_RECEIVED },
+  { id: true, name: Constants.transfersProductsZone.states.RECEIVED },
 ];
 
 export const transfersProductsZoneStateId = {

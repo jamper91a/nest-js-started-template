@@ -1,5 +1,5 @@
 import {
-  BeforeUpdate,
+  BeforeCreate,
   BelongsTo,
   Column,
   ForeignKey,
@@ -8,6 +8,9 @@ import {
 } from 'sequelize-typescript';
 import { Inventory } from '../../inventories/entities/inventory.entity';
 import { Epc } from '../../epcs/entities/epc.entity';
+import { Zone } from '../../zones/entities/zone.entity';
+import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
+import { epcStatesId } from '../../epcs/entities/epc-state.entity';
 
 @Table({ tableName: 'inventoriesProducts' })
 export class InventoriesProduct extends Model {
@@ -25,8 +28,34 @@ export class InventoriesProduct extends Model {
   @BelongsTo(() => Epc)
   epc: Epc;
 
-  @BeforeUpdate
-  static validateProduct(inventoryProduct: InventoriesProduct) {
-    return null;
+  @ForeignKey(() => Zone)
+  @Column
+  zoneId: number;
+
+  @BelongsTo(() => Zone)
+  zone: Zone;
+
+  @ForeignKey(() => ProductsZone)
+  @Column
+  productsZoneId: number;
+
+  @BelongsTo(() => ProductsZone)
+  productsZone: ProductsZone;
+
+  @BeforeCreate
+  static async validateProduct(inventoryProduct: InventoriesProduct) {
+    const productZone = await ProductsZone.findOne({
+      where: {
+        id: inventoryProduct.productsZoneId,
+      },
+      include: [Epc],
+    });
+    if (productZone) {
+      if (productZone.epc.state !== epcStatesId.ASSIGNED) {
+        throw new Error('error_IP03');
+      }
+    } else {
+      throw new Error('error_IP01');
+    }
   }
 }

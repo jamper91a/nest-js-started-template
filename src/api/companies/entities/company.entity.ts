@@ -2,12 +2,17 @@ import {
   BelongsTo,
   Column,
   ForeignKey,
+  HasMany,
   IsUrl,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { User } from '../../users/entities/user.entitity';
 import { Dealer } from '../../dealers/entities/dealer.entity';
+import { Employee } from '../../employees/entities/employee.entity';
+import { Epc } from '../../epcs/entities/epc.entity';
+import { Product } from '../../products/entities/product.entity';
+import { Shop } from '../../shops/entities/shop.entity';
 
 @Table({ tableName: 'companies' })
 export class Company extends Model {
@@ -18,12 +23,17 @@ export class Company extends Model {
   })
   photo?: string;
 
-  @ForeignKey(() => User)
-  @Column
-  userId: number;
+  @HasMany(() => Employee)
+  employees: Employee[];
 
-  @BelongsTo(() => User)
-  user: User;
+  @HasMany(() => Epc)
+  epcs: Epc[];
+
+  @HasMany(() => Product)
+  products: Product[];
+
+  @HasMany(() => Shop)
+  shops: Shop[];
 
   @ForeignKey(() => Dealer)
   @Column
@@ -31,4 +41,11 @@ export class Company extends Model {
 
   @BelongsTo(() => Dealer)
   dealer: Dealer;
+
+  @ForeignKey(() => User)
+  @Column
+  userId: number;
+
+  @BelongsTo(() => User)
+  user: User;
 }

@@ -8,6 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { Company } from '../../companies/entities/company.entity';
 import { Employee } from '../../employees/entities/employee.entity';
+import { Zone } from '../../zones/entities/zone.entity';
 
 @Table({ tableName: 'shops' })
 export class Shop extends Model {
@@ -21,4 +22,7 @@ export class Shop extends Model {
 
   @HasMany(() => Employee)
   employees: Employee[];
+
+  @HasMany(() => Zone)
+  zones: Zone[];
 }

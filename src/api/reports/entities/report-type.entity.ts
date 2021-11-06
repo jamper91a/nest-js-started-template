@@ -6,8 +6,8 @@ export class ReportTypeEntity {
 }
 
 export const reportTypes: ReportTypeEntity[] = [
-  { id: 1, name: Constants.reports.type.DIFFERENCE_PHYSICAL_UNITS },
-  { id: 2, name: Constants.reports.type.SOLD_UNITS },
+  { id: 1, name: Constants.report.type.DIFFERENCE_PHYSICAL_UNITS },
+  { id: 2, name: Constants.report.type.SOLD_UNITS },
 ];
 
 export const reportTypesId = {

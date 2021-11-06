@@ -13,13 +13,19 @@ export const Constants = {
       MISSING: 'MISSING',
     },
   },
-  reports: {
+  report: {
     type: {
       DIFFERENCE_PHYSICAL_UNITS: 'DIFFERENCE_PHYSICAL_UNITS',
       SOLD_UNITS: 'SOLD_UNITS',
     },
   },
-  transfersProductsZones: {
+  return: {
+    type: {
+      CLIENT: 'CLIENT',
+      SUPPLIER: 'SUPPLIER',
+    },
+  },
+  transfersProductsZone: {
     states: {
       NOT_RECEIVED: 'NOT_RECEIVED',
       RECEIVED: 'RECEIVED',

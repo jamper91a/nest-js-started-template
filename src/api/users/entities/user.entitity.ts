@@ -4,6 +4,7 @@ import {
   BelongsTo,
   Column,
   ForeignKey,
+  HasOne,
   IsEmail,
   Model,
   Table,
@@ -11,6 +12,8 @@ import {
 } from 'sequelize-typescript';
 import * as bcrypt from 'bcryptjs';
 import { Group } from '../../groups/entities/group.entity';
+import { Employee } from '../../employees/entities/employee.entity';
+import { Dealer } from '../../dealers/entities/dealer.entity';
 
 @Table({ tableName: 'users' })
 export class User extends Model {
@@ -39,13 +42,18 @@ export class User extends Model {
   @BelongsTo(() => Group)
   group: Group;
 
+  @HasOne(() => Employee)
+  employee: Employee;
+
+  @HasOne(() => Dealer)
+  dealer: Dealer;
+
   @BeforeCreate
   @BeforeUpdate
   static hashPassword(user: User) {
     if (user.password && user.password !== user.previous('password')) {
       const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(user.password, salt);
-      user.password = hash;
+      user.password = bcrypt.hashSync(user.password, salt);
     } else {
       user.password = user.previous('password');
     }

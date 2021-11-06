@@ -2,9 +2,9 @@ import {
   BeforeCreate,
   BeforeUpdate,
   BelongsTo,
+  BelongsToMany,
   Column,
   ForeignKey,
-  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -13,6 +13,9 @@ import { Return } from '../../returns/entities/return.entity';
 import { Epc } from '../../epcs/entities/epc.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
 import { epcStatesId } from '../../epcs/entities/epc-state.entity';
+import { InventoriesProduct } from '../../inventories-products/entities/inventories-product.entity';
+import { Zone } from '../../zones/entities/zone.entity';
+import { Sell } from '../../sells/entities/sell.entity';
 
 @Table({ tableName: 'productsZones' })
 export class ProductsZone extends Model {
@@ -44,7 +47,22 @@ export class ProductsZone extends Model {
   @BelongsTo(() => Epc)
   epc: Epc;
 
-  @HasMany(() => Inventory) inventories: Inventory[];
+  @ForeignKey(() => Zone)
+  @Column
+  zoneId: number;
+
+  @BelongsTo(() => Zone)
+  zone: Zone;
+
+  @ForeignKey(() => Sell)
+  @Column
+  sellId: number;
+
+  @BelongsTo(() => Sell)
+  sell: Sell;
+
+  @BelongsToMany(() => Inventory, () => InventoriesProduct)
+  inventories: Inventory[];
 
   @BeforeCreate
   static async validateEpc(productsZone: ProductsZone) {
@@ -69,7 +87,11 @@ export class ProductsZone extends Model {
           id: instance.id,
         },
       });
+      //If the product is going to be returned, it should has been sold before and not returned
       if (productZone) {
+        if (productZone.sellId <= 1) {
+          throw new Error('error_DEV01');
+        }
         if (productZone.returnId > 1) {
           throw new Error('error_DEV02');
         }

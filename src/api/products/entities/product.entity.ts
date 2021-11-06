@@ -7,6 +7,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Company } from '../../companies/entities/company.entity';
+import { Supplier } from '../../suppliers/entities/supplier.entity';
 
 @Table({ tableName: 'products' })
 export class Product extends Model {
@@ -31,4 +32,11 @@ export class Product extends Model {
 
   @BelongsTo(() => Company)
   company: Company;
+
+  @ForeignKey(() => Supplier)
+  @Column
+  supplierId: number;
+
+  @BelongsTo(() => Supplier)
+  supplier: Supplier;
 }

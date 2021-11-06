@@ -1,5 +1,6 @@
 import {
   BelongsTo,
+  BelongsToMany,
   Column,
   ForeignKey,
   Is,
@@ -9,6 +10,8 @@ import {
 import { ConsolidatedInventory } from '../../consolidated-inventories/entities/consolidated-inventory.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 import { reportTypes } from './report-type.entity';
+import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
+import { ReportsProductsZone } from '../../reports-products-zones/entities/reports-products-zone.entity';
 
 @Table({ tableName: 'reports' })
 export class Report extends Model {
@@ -45,4 +48,7 @@ export class Report extends Model {
   secondInventoryId: number;
   @BelongsTo(() => ConsolidatedInventory)
   secondInventory: ConsolidatedInventory;
+
+  @BelongsToMany(() => ProductsZone, () => ReportsProductsZone)
+  productsZone: ProductsZone[];
 }
