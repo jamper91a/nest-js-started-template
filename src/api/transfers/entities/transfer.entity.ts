@@ -1,5 +1,6 @@
 import {
   BelongsTo,
+  BelongsToMany,
   Column,
   ForeignKey,
   Model,
@@ -7,6 +8,8 @@ import {
 } from 'sequelize-typescript';
 import { Employee } from '../../employees/entities/employee.entity';
 import { Shop } from '../../shops/entities/shop.entity';
+import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
+import { TransfersProductsZone } from '../../transfers-products-zones/entities/transfers-products-zone.entity';
 
 @Table({ tableName: 'suppliers' })
 export class Transfer extends Model {
@@ -31,4 +34,7 @@ export class Transfer extends Model {
   shopDestinationId: number;
   @BelongsTo(() => Shop)
   shopDestination: Shop;
+
+  @BelongsToMany(() => ProductsZone, () => TransfersProductsZone)
+  productsZone: ProductsZone;
 }
