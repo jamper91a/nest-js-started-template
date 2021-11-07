@@ -83,11 +83,11 @@ import { ZonesModule } from './api/zones/zones.module';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: RolesGuard,
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: RolesGuard,
     },
   ],
 })

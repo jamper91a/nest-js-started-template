@@ -11,6 +11,10 @@ import { DealersService } from './dealers.service';
 import { CreateDealerDto } from './dto/create-dealer.dto';
 import { UpdateDealerDto } from './dto/update-dealer.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UserAuth } from '../../decorator/user.decorator';
+import { UserAuthEntity } from '../../auth/entities/user-auth';
+import { Roles } from '../../decorator/roles.decorator';
+import { Constants } from '../../util/constants';
 
 @ApiTags('Dealers')
 @Controller('dealers')
@@ -22,10 +26,11 @@ export class DealersController {
     return this.dealersService.create(createDealerDto);
   }
 
-  // @Post('get-companies')
-  // getCompanies(@UserAuth() user : UserAuthEntity){
-  //
-  // }
+  @Post('get-companies')
+  @Roles(Constants.groups.dealer)
+  async getCompanies(@UserAuth() user: UserAuthEntity) {
+    return await this.dealersService.getCompanies(user.user.dealer.id, true);
+  }
 
   @Get()
   findAll() {

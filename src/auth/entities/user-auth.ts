@@ -1,5 +1,5 @@
 import { User } from '../../api/users/entities/user.entitity';
 
-export class UserAuth {
+export class UserAuthEntity {
   user: User;
 }

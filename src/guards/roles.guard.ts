@@ -7,24 +7,25 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
+import { UserAuthEntity } from '../auth/entities/user-auth';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    const roles = this.reflector.get<number[]>('roles', context.getHandler());
     if (!roles) {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
+    const user: UserAuthEntity = request.user;
     //TODO Change user.roles for the real property
-    return this.matchRoles(roles, user.role);
+    return this.matchRoles(roles, user.user.groupId);
   }
-  private matchRoles(roles: string[], userRole: string) {
+
+  private matchRoles(roles: number[], userRole: number) {
     for (const role of roles) {
       if (role === userRole) {
         return true;
