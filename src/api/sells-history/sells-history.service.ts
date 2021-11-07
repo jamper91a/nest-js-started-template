@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { CreateSellsHistoryDto } from './dto/create-sells-history.dto';
 import { UpdateSellsHistoryDto } from './dto/update-sells-history.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { SellsHistory } from './entities/sells-history.entity';
+import { SellHistory } from './entities/sells-history.entity';
 
 @Injectable()
 export class SellsHistoryService {
   constructor(
-    @InjectModel(SellsHistory)
-    private sellModel: typeof SellsHistory,
+    @InjectModel(SellHistory)
+    private sellModel: typeof SellHistory,
   ) {}
 
   create(createSellsHistoryDto: CreateSellsHistoryDto) {

@@ -9,7 +9,7 @@ import {
 import { User } from '../../users/entities/user.entitity';
 import { Company } from '../../companies/entities/company.entity';
 
-@Table
+@Table({ tableName: 'dealer' })
 export class Dealer extends Model {
   @Column name: string;
 

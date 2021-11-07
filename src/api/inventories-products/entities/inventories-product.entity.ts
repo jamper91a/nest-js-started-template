@@ -12,8 +12,8 @@ import { Zone } from '../../zones/entities/zone.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { epcStatesId } from '../../epcs/entities/epc-state.entity';
 
-@Table
-export class InventoriesProduct extends Model {
+@Table({ tableName: 'inventoryProduct' })
+export class InventoryProduct extends Model {
   @ForeignKey(() => Inventory)
   @Column
   inventoryId: number;
@@ -43,7 +43,7 @@ export class InventoriesProduct extends Model {
   productsZone: ProductsZone;
 
   @BeforeCreate
-  static async validateProduct(inventoryProduct: InventoriesProduct) {
+  static async validateProduct(inventoryProduct: InventoryProduct) {
     const productZone = await ProductsZone.findOne({
       where: {
         id: inventoryProduct.productsZoneId,

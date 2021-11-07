@@ -11,9 +11,9 @@ import { Company } from '../../companies/entities/company.entity';
 import { User } from '../../users/entities/user.entitity';
 import { Shop } from '../../shops/entities/shop.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
-import { EmployeesInventory } from '../../employees-inventories/entities/employees-inventory.entity';
+import { EmployeeInventory } from '../../employees-inventories/entities/employees-inventory.entity';
 
-@Table
+@Table({ tableName: 'employee' })
 export class Employee extends Model {
   @ForeignKey(() => Company)
   @Column
@@ -37,6 +37,6 @@ export class Employee extends Model {
   @BelongsTo(() => Shop)
   shop: Shop;
 
-  @BelongsToMany(() => Inventory, () => EmployeesInventory)
+  @BelongsToMany(() => Inventory, () => EmployeeInventory)
   inventories: Inventory;
 }

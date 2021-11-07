@@ -13,11 +13,11 @@ import { Return } from '../../returns/entities/return.entity';
 import { Epc } from '../../epcs/entities/epc.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
 import { epcStatesId } from '../../epcs/entities/epc-state.entity';
-import { InventoriesProduct } from '../../inventories-products/entities/inventories-product.entity';
+import { InventoryProduct } from '../../inventories-products/entities/inventories-product.entity';
 import { Zone } from '../../zones/entities/zone.entity';
 import { Sell } from '../../sells/entities/sell.entity';
 
-@Table
+@Table({ tableName: 'productZone' })
 export class ProductsZone extends Model {
   @Column admissionDate: Date;
   @Column transferDate: Date;
@@ -61,7 +61,7 @@ export class ProductsZone extends Model {
   @BelongsTo(() => Sell)
   sell?: Sell;
 
-  @BelongsToMany(() => Inventory, () => InventoriesProduct)
+  @BelongsToMany(() => Inventory, () => InventoryProduct)
   inventories: Inventory[];
 
   @BeforeCreate

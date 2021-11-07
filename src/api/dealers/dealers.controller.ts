@@ -15,6 +15,7 @@ import { UserAuth } from '../../decorator/user.decorator';
 import { UserAuthEntity } from '../../auth/entities/user-auth';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
+import { CompaniesByDealerDto } from './dto/companies-by-dealer.dto';
 
 @ApiTags('Dealers')
 @Controller('dealers')
@@ -26,10 +27,20 @@ export class DealersController {
     return this.dealersService.create(createDealerDto);
   }
 
+  /**
+   * Get the companies that a dealer has created
+   * @param user
+   */
   @Post('get-companies')
   @Roles(Constants.groups.dealer)
-  async getCompanies(@UserAuth() user: UserAuthEntity) {
-    return await this.dealersService.getCompanies(user.user.dealer.id, true);
+  async getCompanies(
+    @UserAuth() user: UserAuthEntity,
+    @Body() dto: CompaniesByDealerDto,
+  ) {
+    return await this.dealersService.getCompanies(
+      user.user.dealer.id,
+      dto.justActiveCompanies,
+    );
   }
 
   @Get()

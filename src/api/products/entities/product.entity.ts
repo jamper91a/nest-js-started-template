@@ -9,7 +9,7 @@ import {
 import { Company } from '../../companies/entities/company.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
 
-@Table
+@Table({ tableName: 'product' })
 export class Product extends Model {
   @Column ean: string;
   @Column plu: string;

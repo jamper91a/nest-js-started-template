@@ -15,7 +15,7 @@ import {
 import { Transfer } from '../../transfers/entities/transfer.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 
-@Table
+@Table({ tableName: 'transfersProductsZone' })
 export class TransfersProductsZone extends Model {
   @Is('VALID_TRANSFER_STATE', (value) => {
     for (const state of transfersProductsZoneState) {

@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { CreateEmployeesInventoryDto } from './dto/create-employees-inventory.dto';
 import { UpdateEmployeesInventoryDto } from './dto/update-employees-inventory.dto';
 import { InjectModel } from '@nestjs/sequelize';
-import { EmployeesInventory } from './entities/employees-inventory.entity';
+import { EmployeeInventory } from './entities/employees-inventory.entity';
 
 @Injectable()
 export class EmployeesInventoriesService {
   constructor(
-    @InjectModel(EmployeesInventory)
-    private employeeInventoryModel: typeof EmployeesInventory,
+    @InjectModel(EmployeeInventory)
+    private employeeInventoryModel: typeof EmployeeInventory,
   ) {}
 
   create(createEmployeesInventoryDto: CreateEmployeesInventoryDto) {

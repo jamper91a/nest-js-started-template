@@ -9,7 +9,7 @@ import {
 import { Employee } from '../../employees/entities/employee.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
 
-@Table
+@Table({ tableName: 'consolidatedInventory' })
 export class ConsolidatedInventory extends Model {
   @Column name: string;
   @Column totalProducts: number;

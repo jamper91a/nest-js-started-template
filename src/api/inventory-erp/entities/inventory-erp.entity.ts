@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { Shop } from '../../shops/entities/shop.entity';
 
-@Table
+@Table({ tableName: 'inventoryErp' })
 export class InventoryErp extends Model {
   @Column({
     type: DataType.JSON,

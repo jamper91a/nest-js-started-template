@@ -9,8 +9,8 @@ import { Product } from '../../products/entities/product.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { User } from '../../users/entities/user.entitity';
 
-@Table
-export class SellsHistory extends Model {
+@Table({ tableName: 'sellHistory' })
+export class SellHistory extends Model {
   @ForeignKey(() => Product)
   @Column
   productId: number;

@@ -8,8 +8,8 @@ import {
 import { Employee } from '../../employees/entities/employee.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
 
-@Table
-export class EmployeesInventory extends Model {
+@Table({ tableName: 'employeeInventory' })
+export class EmployeeInventory extends Model {
   @ForeignKey(() => Employee)
   @Column
   employeeId: number;

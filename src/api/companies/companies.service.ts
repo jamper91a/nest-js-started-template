@@ -12,12 +12,20 @@ export class CompaniesService {
     return 'This action adds a new company';
   }
 
+  async findCompanyByUserId(userId: number) {
+    return await this.companyModel.findOne({ where: { userId } });
+  }
+
   findAll() {
     return `This action returns all companies`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(id: number) {
+    return await this.companyModel.findOne({ where: { id } });
+  }
+
+  async findOneByDealer(id: number, dealerId) {
+    return await this.companyModel.findOne({ where: { id, dealerId } });
   }
 
   update(id: number, updateCompanyDto: UpdateCompanyDto) {

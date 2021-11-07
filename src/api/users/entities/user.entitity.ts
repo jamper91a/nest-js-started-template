@@ -15,7 +15,7 @@ import { Group } from '../../groups/entities/group.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 import { Dealer } from '../../dealers/entities/dealer.entity';
 
-@Table
+@Table({ tableName: 'user' })
 export class User extends Model {
   @Column
   name: string;

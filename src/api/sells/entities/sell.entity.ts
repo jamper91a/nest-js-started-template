@@ -9,7 +9,7 @@ import {
 import { User } from '../../users/entities/user.entitity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 
-@Table
+@Table({ tableName: 'sell' })
 export class Sell extends Model {
   @ForeignKey(() => User)
   @Column

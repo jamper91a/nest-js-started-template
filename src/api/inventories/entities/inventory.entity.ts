@@ -9,12 +9,12 @@ import {
 } from 'sequelize-typescript';
 import { ConsolidatedInventory } from '../../consolidated-inventories/entities/consolidated-inventory.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
-import { InventoriesProduct } from '../../inventories-products/entities/inventories-product.entity';
+import { InventoryProduct } from '../../inventories-products/entities/inventories-product.entity';
 import { Employee } from '../../employees/entities/employee.entity';
-import { EmployeesInventory } from '../../employees-inventories/entities/employees-inventory.entity';
+import { EmployeeInventory } from '../../employees-inventories/entities/employees-inventory.entity';
 import { Zone } from '../../zones/entities/zone.entity';
 
-@Table
+@Table({ tableName: 'inventory' })
 export class Inventory extends Model {
   @Column date: Date;
   @Column partial: boolean;
@@ -29,10 +29,10 @@ export class Inventory extends Model {
   @BelongsTo(() => ConsolidatedInventory)
   consolidatedInventory?: ConsolidatedInventory;
 
-  @BelongsToMany(() => ProductsZone, () => InventoriesProduct)
+  @BelongsToMany(() => ProductsZone, () => InventoryProduct)
   productsZone: ProductsZone[];
 
-  @BelongsToMany(() => Employee, () => EmployeesInventory)
+  @BelongsToMany(() => Employee, () => EmployeeInventory)
   employees: Employee[];
 
   @ForeignKey(() => Zone)
