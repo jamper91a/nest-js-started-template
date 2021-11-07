@@ -3,6 +3,7 @@
 </p>
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
@@ -24,8 +25,9 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-This repository have already implemente the next features:
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository. This repository have already implemente
+the next features:
+
 - Nestify
 - Global class validation
 - Global guards
@@ -37,19 +39,19 @@ This repository have already implemente the next features:
 - Helmet Protection
 - Open Cli
 
-
 ## Global class validation
 
 To implement a global class validation on an controller you must use decorators on the dto:
+
 ```javascript
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import {IsEmail, IsNotEmpty} from 'class-validator';
 
 export class CreateUserDto {
-@IsEmail()
-email: string;
+    @IsEmail()
+    email: string;
 
-@IsNotEmpty()
-password: string;
+    @IsNotEmpty()
+    password: string;
 }
 ```
 
@@ -58,61 +60,86 @@ password: string;
 Some guards were already implemented for convenience:
 
 - Role guard: Allow you to block controller actions base on a role
+
 ```javascript
 @Post()
 @Roles(['admin', 'customer'])
-async create(@Body() createCatDto: CreateCatDto) {
+async
+create(@Body()
+createCatDto: CreateCatDto
+)
+{
     this.catsService.create(createCatDto);
 }
 //If roles are not required we can ommit the guard
 @Post()
-async create(@Body() createCatDto: CreateCatDto) {
+async
+create(@Body()
+createCatDto: CreateCatDto
+)
+{
     this.catsService.create(createCatDto);
 }
 ```
-For this guard to work properly you must attach the user object to the user request (when user have logged) and
-you must specify which propertly of the user object to compare on the file */guards/roles.guard.ts* line 25
-##Decorators:
+
+For this guard to work properly you must attach the user object to the user request (when user have logged) and you must
+specify which propertly of the user object to compare on the file */guards/roles.guard.ts* line 25
+
+## Decorators:
 
 Some common decorators have been implemented
 
 - Public: Will allow to have access to endpoints without being logged
+
 ```javascript
 @Get()
 @Public()
-async findAll() {
+async
+findAll()
+{
 }
 ```
+
 - User: Will give access to the user auth in on the endpoint
+
 ```javascript
 @Post('stripe')
-  @Roles(Constants.groups.spectator)
-  async edit(@UserAuth() user : UserAuthEntity) {
-  }
+@Roles(Constants.groups.spectator)
+async
+edit(@UserAuth()
+user : UserAuthEntity
+)
+{
+}
 ```
 
 ## Configuration Service
 
-The configuration service has been implemented using yml files. You can have as many enviromental
-configuration files as you want. By default the *config-local.yml* was created.
-To create more copy the *config-local.yml* and on the same folder with another name such as
-config-development.yml and when you start nest you must attach the *NODE_ENV* var
+The configuration service has been implemented using yml files. You can have as many enviromental configuration files as
+you want. By default the *config-local.yml* was created. To create more copy the *config-local.yml* and on the same
+folder with another name such as config-development.yml and when you start nest you must attach the *NODE_ENV* var
+
 ```bash
 NODE_ENV=development nest start
 ```
 
-##Sequelize:
+## Sequelize:
 
 Sequelize has been integrate. You must change the credentials on *config-local.yml*
 
 ## Authentication with Passport
- ###Local Authentication
-####Fields
-Local authentication implemented using passport.
-It will use a combination of **username/password** to validate. To change username for email or a different key, go to *auth/
-strategies/local.strategy*
-####Login
-To change the logic for validation (use a database, an external service, etc) go to *auth/auth.service.ts* and change the function validateUser
+
+### Local Authentication
+
+#### Fields
+
+Local authentication implemented using passport. It will use a combination of **username/password** to validate. To
+change username for email or a different key, go to *auth/ strategies/local.strategy*
+
+#### Login
+
+To change the logic for validation (use a database, an external service, etc) go to *auth/auth.service.ts* and change
+the function validateUser
 
 ```javascript 
 async validate(username: string, password: string): Promise<any> {
@@ -121,9 +148,11 @@ async validate(username: string, password: string): Promise<any> {
     return user;
 }
 ```
+
 ### Jwt Authentication
-All routes are validated using jwt, except for those who hace the decorator *@Public*.
-To change the logic review the file *auth/strategies/jwt.strategy*
+
+All routes are validated using jwt, except for those who hace the decorator *@Public*. To change the logic review the
+file *auth/strategies/jwt.strategy*
 
 ## Installation
 
@@ -156,6 +185,18 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Tokens
+
+```bash
+# Admin
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
 
 ## Support
 

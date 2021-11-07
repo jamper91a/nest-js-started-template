@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import compression from 'fastify-compress';
 import helmet from 'fastify-helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Constants } from './util/constants';
 
 declare const module: any;
 
@@ -44,8 +45,44 @@ async function bootstrap() {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
+        name: 'JWT',
+        description: Constants.tokens.admin,
+        in: 'header',
       },
-      'access-token',
+      'jwt-admin',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: Constants.tokens.dealer,
+        in: 'header',
+      },
+      'jwt-dealer',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: Constants.tokens.cashier,
+        in: 'header',
+      },
+      'jwt-employee',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: Constants.tokens.companyAdmin,
+        in: 'header',
+      },
+      'jwt-company',
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
