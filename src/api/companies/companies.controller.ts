@@ -16,8 +16,7 @@ export class CompaniesController {
   ) {}
 
   /**
-   * Get the company using the id. It is used by the dealers or the company's manager
-   * @param id Company's id. If is not given will use the id on the session
+   * Get the company using the id. It will use the id on the session
    */
   @Roles(Constants.groups.companyAdmin)
   @ApiBearerAuth('jwt-company')
@@ -32,6 +31,10 @@ export class CompaniesController {
     return company;
   }
 
+  /**
+   * Get the company using the id. It is use by admin
+   * @param id Company id
+   */
   @Roles(Constants.groups.admin)
   @ApiBearerAuth('jwt-admin')
   @Get('by-admin/:id')
@@ -46,6 +49,10 @@ export class CompaniesController {
     return company;
   }
 
+  /**
+   * Get the company using the id. It is use by dealer, the company must belong to that dealer
+   * @param id
+   */
   @Roles(Constants.groups.dealer)
   @ApiBearerAuth('jwt-dealer')
   @Get('by-dealer/:id')

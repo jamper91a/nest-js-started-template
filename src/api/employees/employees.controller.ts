@@ -1,45 +1,23 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { Roles } from '../../decorator/roles.decorator';
+import { Constants } from '../../util/constants';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserAuth } from '../../decorator/user.decorator';
+import { UserAuthEntity } from '../../auth/entities/user-auth';
 
+@ApiTags('Employees')
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
-  @Post()
-  create(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.employeesService.create(createEmployeeDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.employeesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.employeesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
-  ) {
-    return this.employeesService.update(+id, updateEmployeeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.employeesService.remove(+id);
+  /**
+   * Get the employees of a company. It is used by the admin of the company
+   */
+  @Roles(Constants.groups.admin)
+  @ApiBearerAuth('jwt-admin')
+  @Get('by-company')
+  async findByCompanyId(@UserAuth() user: UserAuthEntity) {
+    return this.employeesService.findByCompanyId(user.user.company.id);
   }
 }

@@ -44,6 +44,10 @@ export class AuthService {
         employee = await user.$get('employee');
         user.setDataValue('employee', employee);
         break;
+      case Constants.groups.admin:
+        employee = await user.$get('company');
+        user.setDataValue('company', employee);
+        break;
     }
 
     const payload: Payload = { user };

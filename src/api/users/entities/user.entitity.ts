@@ -14,6 +14,7 @@ import * as bcrypt from 'bcryptjs';
 import { Group } from '../../groups/entities/group.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 import { Dealer } from '../../dealers/entities/dealer.entity';
+import { Company } from '../../companies/entities/company.entity';
 
 @Table({ tableName: 'user' })
 export class User extends Model {
@@ -47,6 +48,12 @@ export class User extends Model {
 
   @HasOne(() => Dealer)
   dealer?: Dealer;
+
+  /**
+   * This is the company, it will be load for the company's admin (group admin)
+   */
+  @HasOne(() => Company)
+  company?: Company;
 
   @BeforeUpdate
   @BeforeCreate

@@ -84,6 +84,17 @@ async function bootstrap() {
       },
       'jwt-company',
     )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: Constants.tokens.admin,
+        in: 'header',
+      },
+      'jwt-admin',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
