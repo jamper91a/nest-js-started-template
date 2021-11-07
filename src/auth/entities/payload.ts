@@ -1,4 +1,5 @@
+import { User } from '../../api/users/entities/user.entitity';
+
 export class Payload {
-  sub: number;
-  username: string;
+  user: User;
 }

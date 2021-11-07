@@ -48,8 +48,8 @@ export class User extends Model {
   @HasOne(() => Dealer)
   dealer: Dealer;
 
-  @BeforeCreate
   @BeforeUpdate
+  @BeforeCreate
   static hashPassword(user: User) {
     if (user.password && user.password !== user.previous('password')) {
       const salt = bcrypt.genSaltSync(10);

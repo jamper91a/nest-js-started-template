@@ -3,6 +3,8 @@ import { CreateDealerDto } from './dto/create-dealer.dto';
 import { UpdateDealerDto } from './dto/update-dealer.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Dealer } from './entities/dealer.entity';
+import { User } from '../users/entities/user.entitity';
+import { Company } from '../companies/entities/company.entity';
 
 @Injectable()
 export class DealersService {
@@ -10,6 +12,44 @@ export class DealersService {
     @InjectModel(Dealer)
     private dealerModel: typeof Dealer,
   ) {}
+
+  async getCompanies(dealerId: number, justActiveCompanies: boolean) {
+    let dealer: Dealer;
+    if (justActiveCompanies) {
+      dealer = await this.dealerModel.findOne({
+        where: {
+          id: dealerId,
+        },
+        include: [
+          User,
+          {
+            model: Company,
+            include: [
+              {
+                model: User,
+                where: {
+                  active: true,
+                },
+              },
+            ],
+          },
+        ],
+      });
+    } else {
+      dealer = await this.dealerModel.findOne({
+        where: {
+          id: dealerId,
+        },
+        include: [
+          User,
+          {
+            model: Company,
+            include: [User],
+          },
+        ],
+      });
+    }
+  }
 
   create(createDealerDto: CreateDealerDto) {
     return 'This action adds a new dealer';

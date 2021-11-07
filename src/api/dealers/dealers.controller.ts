@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { DealersService } from './dealers.service';
 import { CreateDealerDto } from './dto/create-dealer.dto';
 import { UpdateDealerDto } from './dto/update-dealer.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Dealers')
 @Controller('dealers')
 export class DealersController {
   constructor(private readonly dealersService: DealersService) {}
@@ -11,6 +21,11 @@ export class DealersController {
   create(@Body() createDealerDto: CreateDealerDto) {
     return this.dealersService.create(createDealerDto);
   }
+
+  // @Post('get-companies')
+  // getCompanies(@UserAuth() user : UserAuthEntity){
+  //
+  // }
 
   @Get()
   findAll() {

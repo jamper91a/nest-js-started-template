@@ -1,8 +1,16 @@
 export const Constants = {
   auth: {
     jwt: {
-      secret: 'secret',
+      secret: 'k{B^um3fzwP-68cN',
     },
+  },
+  groups: {
+    superAdmin: 1,
+    admin: 2,
+    cashier: 3,
+    warehouse: 4,
+    dealer: 5,
+    companyAdmin: 6,
   },
   epc: {
     states: {

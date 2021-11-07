@@ -9,7 +9,14 @@ export class UsersService {
     private userModel: typeof User,
   ) {}
 
-  async findOne(username: string): Promise<User | undefined> {
-    return null;
+  async findByUsername(username: string): Promise<User | undefined> {
+    return this.userModel.findOne({ where: { username } });
+  }
+
+  async updatePassword(username: string, password: string) {
+    await this.userModel.update(
+      { password },
+      { where: { username }, individualHooks: true },
+    );
   }
 }

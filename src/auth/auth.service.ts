@@ -5,6 +5,9 @@ import { Payload } from './entities/payload';
 import { User } from '../api/users/entities/user.entitity';
 import { LoginResponseDto } from './entities/responses/login-response.dto';
 
+import * as bcrypt from 'bcryptjs';
+import { Constants } from '../util/constants';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -18,19 +21,39 @@ export class AuthService {
    * @param password
    */
   async validateUser(username: string, password: string): Promise<User> {
-    const user: User = await this.usersService.findOne(username);
-    if (user && user.password === password) {
-      delete user.password;
+    const user: User = await this.usersService.findByUsername(username);
+    if (user && bcrypt.compareSync(password, user.password)) {
+      user.setDataValue('password', null);
       return user;
     }
     return null;
   }
 
   async login(user: User): Promise<LoginResponseDto> {
-    const payload: Payload = { username: user.username, sub: user.id };
+    let dealer, employee;
+    switch (user.groupId) {
+      case Constants.groups.dealer:
+        dealer = await user.$get('dealer');
+        user.setDataValue('dealer', dealer);
+        break;
+      case Constants.groups.cashier:
+        employee = await user.$get('employee');
+        user.setDataValue('employee', employee);
+        break;
+      case Constants.groups.warehouse:
+        employee = await user.$get('employee');
+        user.setDataValue('employee', employee);
+        break;
+    }
+
+    const payload: Payload = { user };
     return {
       access_token: this.jwtService.sign(payload),
       user,
     };
+  }
+
+  async updatePassword(username: string, password: string) {
+    const user = await this.usersService.updatePassword(username, password);
   }
 }
