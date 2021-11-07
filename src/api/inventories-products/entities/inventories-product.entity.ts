@@ -12,7 +12,7 @@ import { Zone } from '../../zones/entities/zone.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { epcStatesId } from '../../epcs/entities/epc-state.entity';
 
-@Table({ tableName: 'inventoriesProducts' })
+@Table
 export class InventoriesProduct extends Model {
   @ForeignKey(() => Inventory)
   @Column

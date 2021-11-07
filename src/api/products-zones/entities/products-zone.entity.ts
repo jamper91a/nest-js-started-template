@@ -17,7 +17,7 @@ import { InventoriesProduct } from '../../inventories-products/entities/inventor
 import { Zone } from '../../zones/entities/zone.entity';
 import { Sell } from '../../sells/entities/sell.entity';
 
-@Table({ tableName: 'productsZones' })
+@Table
 export class ProductsZone extends Model {
   @Column admissionDate: Date;
   @Column transferDate: Date;
@@ -35,10 +35,10 @@ export class ProductsZone extends Model {
 
   @ForeignKey(() => Return)
   @Column
-  returnId: number;
+  returnId?: number;
 
   @BelongsTo(() => Return)
-  return: Return;
+  return?: Return;
 
   @ForeignKey(() => Epc)
   @Column
@@ -56,10 +56,10 @@ export class ProductsZone extends Model {
 
   @ForeignKey(() => Sell)
   @Column
-  sellId: number;
+  sellId?: number;
 
   @BelongsTo(() => Sell)
-  sell: Sell;
+  sell?: Sell;
 
   @BelongsToMany(() => Inventory, () => InventoriesProduct)
   inventories: Inventory[];

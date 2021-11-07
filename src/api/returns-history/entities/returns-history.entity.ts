@@ -9,7 +9,7 @@ import { User } from '../../users/entities/user.entitity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { Product } from '../../products/entities/product.entity';
 
-@Table({ tableName: 'returnsHistory' })
+@Table
 export class ReturnsHistory extends Model {
   @ForeignKey(() => Product)
   @Column

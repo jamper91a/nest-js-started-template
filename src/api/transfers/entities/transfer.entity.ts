@@ -11,7 +11,7 @@ import { Shop } from '../../shops/entities/shop.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { TransfersProductsZone } from '../../transfers-products-zones/entities/transfers-products-zone.entity';
 
-@Table({ tableName: 'transfers' })
+@Table
 export class Transfer extends Model {
   @Column state: boolean;
   @Column manifest: string;

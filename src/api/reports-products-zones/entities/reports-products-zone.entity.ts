@@ -9,7 +9,7 @@ import { Report } from '../../reports/entities/report.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 
-@Table({ tableName: 'reportsProductsZones' })
+@Table
 export class ReportsProductsZone extends Model {
   @ForeignKey(() => Report)
   @Column

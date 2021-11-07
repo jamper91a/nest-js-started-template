@@ -15,7 +15,7 @@ import { Group } from '../../groups/entities/group.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 import { Dealer } from '../../dealers/entities/dealer.entity';
 
-@Table({ tableName: 'users' })
+@Table
 export class User extends Model {
   @Column
   name: string;
@@ -43,10 +43,10 @@ export class User extends Model {
   group: Group;
 
   @HasOne(() => Employee)
-  employee: Employee;
+  employee?: Employee;
 
   @HasOne(() => Dealer)
-  dealer: Dealer;
+  dealer?: Dealer;
 
   @BeforeUpdate
   @BeforeCreate

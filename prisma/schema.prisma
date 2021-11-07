@@ -1,0 +1,435 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model inventoryerp {
+  id        Int       @id @default(autoincrement())
+  products  Json?
+  createdAt DateTime? @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  shopId    Int
+  shop      shop      @relation(fields: [shopId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventoryErp_shop1")
+
+  @@index([shopId], map: "fk_inventoryErp_shop1")
+}
+
+model user {
+  id            Int             @id @default(autoincrement())
+  name          String?         @db.VarChar(45)
+  username      String?         @unique(map: "username_UNIQUE") @db.VarChar(100)
+  password      String          @db.VarChar(255)
+  username_rfdi String?         @db.VarChar(100)
+  password_rfdi String?         @db.VarChar(255)
+  active        Boolean?
+  createdAt     DateTime?       @db.DateTime(0)
+  updatedAt     DateTime?       @db.DateTime(0)
+  groupId       Int
+  group         group           @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_group1")
+  company       company?
+  dealer        dealer?
+  employee      employee?
+  returnhistory returnhistory[]
+  sell          sell[]
+  sellhistory   sellhistory[]
+  socket        socket[]
+
+  @@index([groupId], map: "fk_user_group1")
+}
+
+model company {
+  id        Int        @id @default(autoincrement())
+  name      String?    @db.VarChar(45)
+  photo     String?    @db.Text
+  createdAt DateTime?  @db.DateTime(0)
+  updatedAt DateTime?  @db.DateTime(0)
+  dealerId  Int
+  userId    Int        @unique(map: "userId_UNIQUE")
+  dealer    dealer     @relation(fields: [dealerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_company_dealer1")
+  user      user       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_company_user1")
+  employee  employee[]
+  epc       epc[]
+  product   product[]
+  shop      shop[]
+  supplier  supplier[]
+
+  @@index([dealerId], map: "fk_company_dealer1")
+}
+
+model consolidatedinventory {
+  id                                                     Int         @id @default(autoincrement())
+  name                                                   String?     @db.VarChar(255)
+  totalProducts                                          Int?
+  createdAt                                              DateTime?   @db.DateTime(0)
+  updatedAt                                              DateTime?   @db.DateTime(0)
+  employeeId                                             Int
+  employee                                               employee    @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_consolidatedInventory_employee1")
+  inventory                                              inventory[]
+  report_consolidatedinventoryToreport_firstInventoryId  report[]    @relation("consolidatedinventoryToreport_firstInventoryId")
+  report_consolidatedinventoryToreport_secondInventoryId report[]    @relation("consolidatedinventoryToreport_secondInventoryId")
+
+  @@index([employeeId], map: "fk_consolidatedInventory_employee1")
+}
+
+model dealer {
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(45)
+  createdAt DateTime? @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  userId    Int       @unique(map: "userId_UNIQUE")
+  user      user      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dealers_user1")
+  company   company[]
+  epc       epc[]
+}
+
+model employee {
+  id                    Int                     @id @default(autoincrement())
+  createdAt             DateTime?               @db.DateTime(0)
+  updatedAt             DateTime?               @db.DateTime(0)
+  companyId             Int
+  shopId                Int
+  userId                Int?                    @unique(map: "userId_UNIQUE")
+  company               company                 @relation(fields: [companyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_company1")
+  shop                  shop                    @relation(fields: [shopId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_shop1")
+  user                  user?                   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_user1")
+  consolidatedinventory consolidatedinventory[]
+  employeeinventory     employeeinventory[]
+  report                report[]
+  reportsproductszone   reportsproductszone[]
+  transfer              transfer[]
+
+  @@index([companyId], map: "fk_employee_company1")
+  @@index([shopId], map: "fk_employee_shop1")
+}
+
+model employeeinventory {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime? @db.DateTime(0)
+  updatedAt   DateTime? @db.DateTime(0)
+  employeeId  Int
+  inventoryId Int
+  employee    employee  @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_employeeInventory_employee1")
+  inventory   inventory @relation(fields: [inventoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_employeeInventory_inventory1")
+
+  @@index([employeeId], map: "fk_employeeInventory_employee1")
+  @@index([inventoryId], map: "fk_employeeInventory_inventory1")
+}
+
+model epc {
+  id               Int                @id @default(autoincrement())
+  state            Int?
+  epc              String?            @unique(map: "epc_UNIQUE") @db.VarChar(45)
+  createdAt        DateTime?          @db.DateTime(0)
+  updatedAt        DateTime?          @db.DateTime(0)
+  companyId        Int
+  dealerId         Int
+  company          company            @relation(fields: [companyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_epc_company1")
+  dealer           dealer             @relation(fields: [dealerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_epc_dealer1")
+  inventoryproduct inventoryproduct[]
+  productszone     productszone[]
+
+  @@index([companyId], map: "fk_epc_company1")
+  @@index([dealerId], map: "fk_epc_dealer1")
+}
+
+model group {
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(45)
+  createdAt DateTime? @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  comment   String?   @db.VarChar(45)
+  user      user[]
+}
+
+model inventory {
+  id                      Int                    @id @default(autoincrement())
+  date                    DateTime?              @db.DateTime(0)
+  partial                 Boolean?
+  collaborative           Boolean?
+  message                 String?                @db.Text
+  createdAt               DateTime?              @db.DateTime(0)
+  updatedAt               DateTime?              @db.DateTime(0)
+  consolidatedInventoryId Int?
+  zoneId                  Int
+  consolidatedinventory   consolidatedinventory? @relation(fields: [consolidatedInventoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_consolidatedInventory1")
+  zone                    zone                   @relation(fields: [zoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_zone1")
+  employeeinventory       employeeinventory[]
+  inventoryproduct        inventoryproduct[]
+
+  @@index([consolidatedInventoryId], map: "fk_inventory_consolidatedInventory1")
+  @@index([zoneId], map: "fk_inventory_zone1")
+}
+
+model inventoryproduct {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime?    @db.DateTime(0)
+  updatedAt      DateTime?    @db.DateTime(0)
+  productsZoneId Int
+  zoneId         Int
+  inventoryId    Int
+  epcId          Int
+  epc            epc          @relation(fields: [epcId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventoryProduct_epc1")
+  inventory      inventory    @relation(fields: [inventoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventoryProduct_inventory1")
+  productszone   productszone @relation(fields: [productsZoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventoryProduct_productsZone1")
+  zone           zone         @relation(fields: [zoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventoryProduct_zone1")
+
+  @@index([epcId], map: "fk_inventoryProduct_epc1")
+  @@index([inventoryId], map: "fk_inventoryProduct_inventory1")
+  @@index([productsZoneId], map: "fk_inventoryProduct_productsZone1")
+  @@index([zoneId], map: "fk_inventoryProduct_zone1")
+}
+
+model product {
+  id            Int             @id @default(autoincrement())
+  ean           String?         @db.VarChar(45)
+  plu           String?         @db.VarChar(45)
+  plu2          String?         @db.VarChar(45)
+  plu3          String?         @db.VarChar(45)
+  branch        String?         @db.VarChar(45)
+  gender        String?         @db.VarChar(45)
+  color         String?         @db.VarChar(45)
+  size          String?         @db.VarChar(45)
+  category      String?         @db.VarChar(45)
+  description   String?         @db.Text
+  amount        Int?
+  image         String?         @db.Text
+  costPrice     Float?
+  sellPrice     Float?
+  createdAt     DateTime?       @db.DateTime(0)
+  updatedAt     DateTime?       @db.DateTime(0)
+  companyId     Int
+  supplieId     Int
+  company       company         @relation(fields: [companyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_company1")
+  supplier      supplier        @relation(fields: [supplieId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_supplier1")
+  productszone  productszone[]
+  returnhistory returnhistory[]
+  sellhistory   sellhistory[]
+
+  @@index([companyId], map: "fk_product_company1")
+  @@index([supplieId], map: "fk_product_supplier1")
+}
+
+model productszone {
+  id                   Int                    @id @default(autoincrement())
+  admissionDate        DateTime?              @db.DateTime(0)
+  transferDate         DateTime?              @db.DateTime(0)
+  sellDate             DateTime?              @db.DateTime(0)
+  notesReturn          String?                @db.Text
+  logsUsers            String?                @db.Text
+  wasTransferred       Boolean?               @default(false)
+  createdAt            DateTime?              @db.DateTime(0)
+  updatedAt            DateTime?              @db.DateTime(0)
+  epcId                Int
+  productId            Int
+  zoneId               Int
+  returnId             Int?
+  sellId               Int?
+  epc                  epc                    @relation(fields: [epcId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_productsZone_epc1")
+  product              product                @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_productsZone_product1")
+  return               Renamedreturn?         @relation("productszoneToreturn", fields: [returnId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_productsZone_return1")
+  sell                 sell?                  @relation(fields: [sellId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_productsZone_sell1")
+  zone                 zone                   @relation(fields: [zoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_productsZone_zone1")
+  inventoryproduct     inventoryproduct[]
+  reportsproductszone  reportsproductszone[]
+  returnhistory        returnhistory[]
+  sellhistory          sellhistory[]
+  transferproductszone transferproductszone[]
+
+  @@index([epcId], map: "fk_productsZone_epc1")
+  @@index([productId], map: "fk_productsZone_product1")
+  @@index([returnId], map: "fk_productsZone_return1")
+  @@index([sellId], map: "fk_productsZone_sell1")
+  @@index([zoneId], map: "fk_productsZone_zone1")
+}
+
+model report {
+  id                                                                    Int                   @id @default(autoincrement())
+  type                                                                  Int?
+  amount                                                                Int?
+  unitsSell                                                             Int?
+  unitsReturned                                                         Int?
+  firstDate                                                             DateTime?             @db.DateTime(0)
+  secondDate                                                            DateTime?             @db.DateTime(0)
+  createdAt                                                             DateTime?             @db.DateTime(0)
+  updatedAt                                                             DateTime?             @db.DateTime(0)
+  employeeId                                                            Int
+  firstInventoryId                                                      Int
+  secondInventoryId                                                     Int
+  employee                                                              employee              @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_report_employee1")
+  consolidatedinventory_consolidatedinventoryToreport_firstInventoryId  consolidatedinventory @relation("consolidatedinventoryToreport_firstInventoryId", fields: [firstInventoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_report_consolidatedInventory1")
+  consolidatedinventory_consolidatedinventoryToreport_secondInventoryId consolidatedinventory @relation("consolidatedinventoryToreport_secondInventoryId", fields: [secondInventoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_report_consolidatedInventory2")
+  reportsproductszone                                                   reportsproductszone[]
+
+  @@index([firstInventoryId], map: "fk_report_consolidatedInventory1")
+  @@index([secondInventoryId], map: "fk_report_consolidatedInventory2")
+  @@index([employeeId], map: "fk_report_employee1")
+}
+
+model reportsproductszone {
+  id                    Int          @id @default(autoincrement())
+  createdAt             DateTime?    @db.DateTime(0)
+  updatedAt             DateTime?    @db.DateTime(0)
+  reportId              Int
+  productsZoneId        Int
+  homologatorEmployeeId Int
+  employee              employee     @relation(fields: [homologatorEmployeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_reportsProductsZone_employee1")
+  productszone          productszone @relation(fields: [productsZoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_reportsProductsZone_productsZone1")
+  report                report       @relation(fields: [reportId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_reportsProductsZone_report1")
+
+  @@index([homologatorEmployeeId], map: "fk_reportsProductsZone_employee1")
+  @@index([productsZoneId], map: "fk_reportsProductsZone_productsZone1")
+  @@index([reportId], map: "fk_reportsProductsZone_report1")
+}
+
+/// This model has been renamed to 'Renamedreturn' during introspection, because the original name 'return' is reserved.
+model Renamedreturn {
+  id           Int            @id @default(autoincrement())
+  name         String?        @db.VarChar(45)
+  type         Boolean?
+  createdAt    DateTime?      @db.DateTime(0)
+  updatedAt    DateTime?      @db.DateTime(0)
+  productszone productszone[] @relation("productszoneToreturn")
+
+  @@map("return")
+}
+
+model returnhistory {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime?    @db.DateTime(0)
+  updatedAt      DateTime?    @db.DateTime(0)
+  userId         Int
+  productsZoneId Int
+  productId      Int
+  product        product      @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_returnHistory_product1")
+  productszone   productszone @relation(fields: [productsZoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_returnHistory_productsZone1")
+  user           user         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_returnHistory_user1")
+
+  @@index([productId], map: "fk_returnHistory_product1")
+  @@index([productsZoneId], map: "fk_returnHistory_productsZone1")
+  @@index([userId], map: "fk_returnHistory_user1")
+}
+
+model salida {
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(45)
+  createdAt DateTime? @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+}
+
+model sell {
+  id           Int            @id @default(autoincrement())
+  createdAt    DateTime?      @db.DateTime(0)
+  updatedAt    DateTime?      @db.DateTime(0)
+  userId       Int
+  user         user           @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sell_user1")
+  productszone productszone[]
+
+  @@index([userId], map: "fk_sell_user1")
+}
+
+model sellhistory {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime?    @db.DateTime(0)
+  updatedAt      DateTime?    @db.DateTime(0)
+  userId         Int
+  productsZoneId Int
+  productId      Int
+  product        product      @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sellHistory_product1")
+  productszone   productszone @relation(fields: [productsZoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sellHistory_productsZone1")
+  user           user         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sellHistory_user1")
+
+  @@index([productId], map: "fk_sellHistory_product1")
+  @@index([productsZoneId], map: "fk_sellHistory_productsZone1")
+  @@index([userId], map: "fk_sellHistory_user1")
+}
+
+model shop {
+  id                                        Int            @id @default(autoincrement())
+  name                                      String?        @db.VarChar(45)
+  createdAt                                 DateTime?      @db.DateTime(0)
+  updatedAt                                 DateTime?      @db.DateTime(0)
+  companyId                                 Int
+  company                                   company        @relation(fields: [companyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shop_company1")
+  employee                                  employee[]
+  inventoryerp                              inventoryerp[]
+  transfer_shopTotransfer_shopDestinationId transfer[]     @relation("shopTotransfer_shopDestinationId")
+  transfer_shopTotransfer_shopSourceId      transfer[]     @relation("shopTotransfer_shopSourceId")
+  zone                                      zone[]
+
+  @@index([companyId], map: "fk_shop_company1")
+}
+
+model socket {
+  id        Int       @id @default(autoincrement())
+  sockets   String?   @db.Text
+  createdAt DateTime? @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  user_id   Int
+  user      user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_socket_user1")
+
+  @@index([user_id], map: "fk_socket_user1")
+}
+
+model supplier {
+  id        Int       @id @default(autoincrement())
+  name      String?   @db.VarChar(45)
+  createdAt DateTime? @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  companyId Int
+  company   company   @relation(fields: [companyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supplier_company1")
+  product   product[]
+
+  @@index([companyId], map: "fk_supplier_company1")
+}
+
+model transfer {
+  id                                    Int                    @id @default(autoincrement())
+  state                                 Boolean?               @default(false)
+  manifest                              String?                @db.VarChar(45)
+  message                               String?                @db.Text
+  createdAt                             DateTime?              @db.DateTime(0)
+  updatedAt                             DateTime?              @db.DateTime(0)
+  employeeId                            Int
+  shopDestinationId                     Int
+  shopSourceId                          Int
+  employee                              employee               @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transfer_employee1")
+  shop_shopTotransfer_shopDestinationId shop                   @relation("shopTotransfer_shopDestinationId", fields: [shopDestinationId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transfer_shop1")
+  shop_shopTotransfer_shopSourceId      shop                   @relation("shopTotransfer_shopSourceId", fields: [shopSourceId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transfer_shop2")
+  transferproductszone                  transferproductszone[]
+
+  @@index([employeeId], map: "fk_transfer_employee1")
+  @@index([shopDestinationId], map: "fk_transfer_shop1")
+  @@index([shopSourceId], map: "fk_transfer_shop2")
+}
+
+model transferproductszone {
+  id             Int          @id @default(autoincrement())
+  state          Boolean?
+  createdAt      DateTime?    @db.DateTime(0)
+  updatedAt      DateTime?    @db.DateTime(0)
+  productsZoneId Int
+  transferId     Int
+  productszone   productszone @relation(fields: [productsZoneId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transferProductsZone_productsZone1")
+  transfer       transfer     @relation(fields: [transferId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transferProductsZone_transfer1")
+
+  @@index([productsZoneId], map: "fk_transferProductsZone_productsZone1")
+  @@index([transferId], map: "fk_transferProductsZone_transfer1")
+}
+
+model zone {
+  id               Int                @id @default(autoincrement())
+  name             String?            @db.VarChar(45)
+  createdAt        DateTime?          @db.DateTime(0)
+  updatedAt        DateTime?          @db.DateTime(0)
+  shopId           Int
+  shop             shop               @relation(fields: [shopId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_zone_shop1")
+  inventory        inventory[]
+  inventoryproduct inventoryproduct[]
+  productszone     productszone[]
+
+  @@index([shopId], map: "fk_zone_shop1")
+}

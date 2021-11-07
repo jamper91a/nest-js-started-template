@@ -13,7 +13,7 @@ import { reportTypes } from './report-type.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
 import { ReportsProductsZone } from '../../reports-products-zones/entities/reports-products-zone.entity';
 
-@Table({ tableName: 'reports' })
+@Table
 export class Report extends Model {
   @Is('VALID_REPORT_TYPE', (value) => {
     for (const state of reportTypes) {

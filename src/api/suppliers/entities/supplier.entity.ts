@@ -7,7 +7,7 @@ import {
 } from 'sequelize-typescript';
 import { Company } from '../../companies/entities/company.entity';
 
-@Table({ tableName: 'suppliers' })
+@Table
 export class Supplier extends Model {
   @Column name: string;
 

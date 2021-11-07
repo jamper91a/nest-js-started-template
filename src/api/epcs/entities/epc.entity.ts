@@ -12,7 +12,7 @@ import { Company } from '../../companies/entities/company.entity';
 import { Dealer } from '../../dealers/entities/dealer.entity';
 import { epcStates } from './epc-state.entity';
 
-@Table({ tableName: 'epcs' })
+@Table
 export class Epc extends Model {
   @Is('VALID_EPC_STATE', (value) => {
     for (const state of epcStates) {

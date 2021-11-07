@@ -12,8 +12,9 @@ import { ProductsZone } from '../../products-zones/entities/products-zone.entity
 import { InventoriesProduct } from '../../inventories-products/entities/inventories-product.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 import { EmployeesInventory } from '../../employees-inventories/entities/employees-inventory.entity';
+import { Zone } from '../../zones/entities/zone.entity';
 
-@Table({ tableName: 'inventories' })
+@Table
 export class Inventory extends Model {
   @Column date: Date;
   @Column partial: boolean;
@@ -26,11 +27,18 @@ export class Inventory extends Model {
   consolidatedInventoryId?: number;
 
   @BelongsTo(() => ConsolidatedInventory)
-  consolidatedInventory: ConsolidatedInventory;
+  consolidatedInventory?: ConsolidatedInventory;
 
   @BelongsToMany(() => ProductsZone, () => InventoriesProduct)
   productsZone: ProductsZone[];
 
   @BelongsToMany(() => Employee, () => EmployeesInventory)
   employees: Employee[];
+
+  @ForeignKey(() => Zone)
+  @Column
+  zoneId: number;
+
+  @BelongsTo(() => Zone)
+  zone: Zone;
 }

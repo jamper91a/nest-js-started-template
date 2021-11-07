@@ -13,7 +13,7 @@ import { Shop } from '../../shops/entities/shop.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
 import { EmployeesInventory } from '../../employees-inventories/entities/employees-inventory.entity';
 
-@Table({ tableName: 'employees' })
+@Table
 export class Employee extends Model {
   @ForeignKey(() => Company)
   @Column

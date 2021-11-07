@@ -14,7 +14,7 @@ import { Epc } from '../../epcs/entities/epc.entity';
 import { Product } from '../../products/entities/product.entity';
 import { Shop } from '../../shops/entities/shop.entity';
 
-@Table({ tableName: 'companies' })
+@Table
 export class Company extends Model {
   @Column name: string;
   @IsUrl
