@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { UserAuth } from '../../decorator/user.decorator';
 import { UserAuthEntity } from '../../auth/entities/user-auth';
@@ -6,6 +6,9 @@ import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CompanyExceptions } from './exceptions/company.exceptions';
+import { TasksService } from '../../util/tasks.service';
+import { Public } from '../../decorator/public.decorator';
+import fastify = require('fastify');
 
 @ApiTags('Companies')
 @Controller('companies')
@@ -13,6 +16,7 @@ export class CompaniesController {
   constructor(
     private readonly companiesService: CompaniesService,
     private readonly companyExceptions: CompanyExceptions,
+    private readonly tasksService: TasksService,
   ) {}
 
   /**
@@ -68,5 +72,14 @@ export class CompaniesController {
       this.companyExceptions.companyNotFound();
     }
     return company;
+  }
+
+  @Public()
+  @Post('/uploadFile')
+  async uploadFile(
+    @Req() req: fastify.FastifyRequest,
+    @Res() res: fastify.FastifyReply<any>,
+  ): Promise<any> {
+    return await this.tasksService.uploadFile(req, res);
   }
 }
