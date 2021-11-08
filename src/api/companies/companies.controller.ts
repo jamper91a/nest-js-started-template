@@ -16,12 +16,12 @@ import { Constants } from '../../util/constants';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CompanyExceptions } from './exceptions/company.exceptions';
 import { FilesService } from '../../util/files.service';
-import { FastifyFileInterceptor } from '../../interceptor/fastify-file-interceptor';
-import { memoryStorage } from 'multer';
-import { imageFileFilter } from '../../util/file-upload-util';
 import { Request } from 'express';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { extname } from 'path';
+import { FastifyFileInterceptor } from '../../interceptor/fastify-file-interceptor';
+import { imageFileFilter } from '../../util/file-upload-util';
+import { memoryStorage } from 'multer';
 
 @ApiTags('Companies')
 @Controller('companies')
