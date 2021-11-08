@@ -1,5 +1,9 @@
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+
 export class UpdateCompanyDto {
-  withPhoto?: boolean;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  logo?: any;
   name?: string;
-  photo: string;
+  @ApiHideProperty()
+  photo?: string = null;
 }

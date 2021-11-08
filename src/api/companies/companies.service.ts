@@ -29,14 +29,11 @@ export class CompaniesService {
   }
 
   async update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return await this.companyModel.update(
-      { updateCompanyDto },
-      {
-        where: {
-          id,
-        },
+    return await this.companyModel.update(updateCompanyDto, {
+      where: {
+        id,
       },
-    );
+    });
   }
 
   remove(id: number) {

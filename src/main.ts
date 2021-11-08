@@ -10,17 +10,18 @@ import compression from 'fastify-compress';
 import helmet from 'fastify-helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Constants } from './util/constants';
-import fmp = require('fastify-multipart');
+import * as multer from 'fastify-multer';
 
 declare const module: any;
 
 async function bootstrap() {
+  const fastifyAdapter = new FastifyAdapter();
+  fastifyAdapter.register(multer.contentParser);
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    fastifyAdapter,
   );
-  // @ts-ignore
-  await app.register(fmp);
+
   await app.register(helmet, {
     contentSecurityPolicy: {
       directives: {

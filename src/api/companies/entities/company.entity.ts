@@ -3,7 +3,6 @@ import {
   Column,
   ForeignKey,
   HasMany,
-  IsUrl,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -17,7 +16,6 @@ import { Shop } from '../../shops/entities/shop.entity';
 @Table({ tableName: 'company' })
 export class Company extends Model {
   @Column name: string;
-  @IsUrl
   @Column({
     allowNull: true,
   })

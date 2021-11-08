@@ -1,14 +1,27 @@
-import { Body, Controller, Get, Param, Patch, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Req,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { UserAuth } from '../../decorator/user.decorator';
 import { UserAuthEntity } from '../../auth/entities/user-auth';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CompanyExceptions } from './exceptions/company.exceptions';
-import { TasksService } from '../../util/tasks.service';
+import { FilesService } from '../../util/files.service';
+import { FastifyFileInterceptor } from '../../interceptor/fastify-file-interceptor';
+import { memoryStorage } from 'multer';
+import { imageFileFilter } from '../../util/file-upload-util';
+import { Request } from 'express';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import fastify = require('fastify');
+import { extname } from 'path';
 
 @ApiTags('Companies')
 @Controller('companies')
@@ -16,7 +29,7 @@ export class CompaniesController {
   constructor(
     private readonly companiesService: CompaniesService,
     private readonly companyExceptions: CompanyExceptions,
-    private readonly tasksService: TasksService,
+    private readonly filesService: FilesService,
   ) {}
 
   /**
@@ -74,35 +87,34 @@ export class CompaniesController {
     return company;
   }
 
-  //
-  // @Public()
-  // @Post('/uploadFile')
-  // async uploadFile(
-  //   @Req() req: fastify.FastifyRequest,
-  //   @Res() res: fastify.FastifyReply<any>,
-  // ): Promise<any> {
-  //   return await this.tasksService.uploadFile(req, res);
-  // }
-
   @Roles(Constants.groups.admin)
   @ApiBearerAuth('jwt-admin')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FastifyFileInterceptor('logo', {
+      storage: memoryStorage(),
+      fileFilter: imageFileFilter,
+    }),
+  )
   @Patch()
   async update(
-    @Body() dto: UpdateCompanyDto,
-    @Req() req: fastify.FastifyRequest,
-    @Res() res: fastify.FastifyReply<any>,
+    @Req() req: Request,
+    @Body() body: UpdateCompanyDto,
     @UserAuth() user: UserAuthEntity,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    const company = await this.companiesService.findCompanyByUserId(
-      user.user.id,
-    );
-    if (company) {
-      if (dto.withPhoto) {
-        const filePath = 'logo/' + company.name;
-        await this.tasksService.uploadFile(filePath, req, res);
-      }
+    if (file) {
+      const path = `uploads/company/${user.user.company.id}`;
+      const fileName = `logo${extname(file.originalname)}`;
+      const destination = this.filesService.uploadFile(path, fileName, file);
+      body.photo = destination;
     } else {
-      this.companyExceptions.companyNotFound();
+      delete body.photo;
     }
+    console.log(body);
+    console.log(file);
+
+    await this.companiesService.update(user.user.company.id, body);
+    return {};
   }
 }
