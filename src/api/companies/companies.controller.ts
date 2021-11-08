@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Req, Res } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { UserAuth } from '../../decorator/user.decorator';
 import { UserAuthEntity } from '../../auth/entities/user-auth';
@@ -7,7 +7,7 @@ import { Constants } from '../../util/constants';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CompanyExceptions } from './exceptions/company.exceptions';
 import { TasksService } from '../../util/tasks.service';
-import { Public } from '../../decorator/public.decorator';
+import { UpdateCompanyDto } from './dto/update-company.dto';
 import fastify = require('fastify');
 
 @ApiTags('Companies')
@@ -74,12 +74,35 @@ export class CompaniesController {
     return company;
   }
 
-  @Public()
-  @Post('/uploadFile')
-  async uploadFile(
+  //
+  // @Public()
+  // @Post('/uploadFile')
+  // async uploadFile(
+  //   @Req() req: fastify.FastifyRequest,
+  //   @Res() res: fastify.FastifyReply<any>,
+  // ): Promise<any> {
+  //   return await this.tasksService.uploadFile(req, res);
+  // }
+
+  @Roles(Constants.groups.admin)
+  @ApiBearerAuth('jwt-admin')
+  @Patch()
+  async update(
+    @Body() dto: UpdateCompanyDto,
     @Req() req: fastify.FastifyRequest,
     @Res() res: fastify.FastifyReply<any>,
-  ): Promise<any> {
-    return await this.tasksService.uploadFile(req, res);
+    @UserAuth() user: UserAuthEntity,
+  ) {
+    const company = await this.companiesService.findCompanyByUserId(
+      user.user.id,
+    );
+    if (company) {
+      if (dto.withPhoto) {
+        const filePath = 'logo/' + company.name;
+        await this.tasksService.uploadFile(filePath, req, res);
+      }
+    } else {
+      this.companyExceptions.companyNotFound();
+    }
   }
 }

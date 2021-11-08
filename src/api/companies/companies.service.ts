@@ -28,8 +28,15 @@ export class CompaniesService {
     return await this.companyModel.findOne({ where: { id, dealerId } });
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async update(id: number, updateCompanyDto: UpdateCompanyDto) {
+    return await this.companyModel.update(
+      { updateCompanyDto },
+      {
+        where: {
+          id,
+        },
+      },
+    );
   }
 
   remove(id: number) {

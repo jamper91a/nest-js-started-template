@@ -8,11 +8,15 @@ import fastify = require('fastify');
 
 @Injectable()
 export class TasksService {
+  fileName = '';
+
   // upload file
   async uploadFile(
+    path: string,
     req: fastify.FastifyRequest,
     res: fastify.FastifyReply<any>,
   ): Promise<any> {
+    this.fileName = path;
     //Check request is multipart
     if (!req.isMultipart()) {
       res.send(
@@ -48,14 +52,14 @@ export class TasksService {
     encoding: string,
     mimetype: string,
   ): Promise<void> {
-    console.log(field);
     console.log(file);
     console.log(filename);
     console.log(encoding);
     console.log(mimetype);
-
     const pipeline = util.promisify(stream.pipeline);
-    const writeStream = fs.createWriteStream(`uploads/${filename}`); //File path
+    const writeStream = fs.createWriteStream(
+      `uploads/${this.fileName}` + '.png',
+    ); //File path
     try {
       await pipeline(file, writeStream);
     } catch (err) {
