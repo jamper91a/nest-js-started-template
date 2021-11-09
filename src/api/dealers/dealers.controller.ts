@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { DealersService } from './dealers.service';
 import { CreateDealerDto } from './dto/create-dealer.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -7,6 +7,7 @@ import { TokenAuthEntity } from '../../auth/entities/user-auth';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { CompaniesByDealerDto } from './dto/companies-by-dealer.dto';
+import { UpdateDealerDto } from './dto/update-dealer.dto';
 
 @ApiTags('Dealers')
 @Controller('dealers')
@@ -51,5 +52,19 @@ export class DealersController {
   @Get('')
   findAll() {
     return this.dealersService.findAll();
+  }
+
+  @Roles(Constants.groups.superAdmin)
+  @ApiBearerAuth('jwt-sadmin')
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.dealersService.findOne(id);
+  }
+
+  @Roles(Constants.groups.superAdmin)
+  @ApiBearerAuth('jwt-sadmin')
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() dto: UpdateDealerDto) {
+    return this.dealersService.update(id, dto);
   }
 }
