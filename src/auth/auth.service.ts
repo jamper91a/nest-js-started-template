@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   async login(user: User): Promise<LoginResponseDto> {
-    let dealer, employee;
+    let dealer, employee, company;
     switch (user.groupId) {
       case Constants.groups.dealer:
         dealer = await user.$get('dealer');
@@ -45,8 +45,10 @@ export class AuthService {
         user.setDataValue('employee', employee);
         break;
       case Constants.groups.admin:
-        employee = await user.$get('company');
-        user.setDataValue('company', employee);
+        company = await user.$get('company');
+        employee = await user.$get('employee');
+        user.setDataValue('company', company);
+        user.setDataValue('employee', employee);
         break;
     }
 

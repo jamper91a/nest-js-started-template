@@ -4,7 +4,7 @@ import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserAuth } from '../../decorator/user.decorator';
-import { UserAuthEntity } from '../../auth/entities/user-auth';
+import { TokenAuthEntity } from '../../auth/entities/user-auth';
 
 @ApiTags('Employees')
 @Controller('employees')
@@ -17,7 +17,7 @@ export class EmployeesController {
   @Roles(Constants.groups.admin)
   @ApiBearerAuth('jwt-admin')
   @Get('by-company')
-  async findByCompanyId(@UserAuth() user: UserAuthEntity) {
-    return this.employeesService.findByCompanyId(user.user.company.id);
+  async findByCompanyId(@UserAuth() token: TokenAuthEntity) {
+    return this.employeesService.findByCompanyId(token.company.id);
   }
 }

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { UserAuth } from '../../decorator/user.decorator';
-import { UserAuthEntity } from '../../auth/entities/user-auth';
+import { TokenAuthEntity } from '../../auth/entities/user-auth';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -35,12 +35,12 @@ export class CompaniesController {
   /**
    * Get the company using the id. It will use the id on the session
    */
-  @Roles(Constants.groups.companyAdmin)
-  @ApiBearerAuth('jwt-company')
+  @Roles(Constants.groups.admin)
+  @ApiBearerAuth('jwt-admin')
   @Get()
-  async findOne(@UserAuth() user: UserAuthEntity) {
+  async findOne(@UserAuth() token: TokenAuthEntity) {
     const company = await this.companiesService.findCompanyByUserId(
-      user.user.id,
+      token.user.id,
     );
     if (!company) {
       this.companyExceptions.companyNotFound();
@@ -52,11 +52,11 @@ export class CompaniesController {
    * Get the company using the id. It is use by admin
    * @param id Company id
    */
-  @Roles(Constants.groups.admin)
+  @Roles(Constants.groups.superAdmin)
   @ApiBearerAuth('jwt-admin')
   @Get('by-admin/:id')
   async findOneByAdmin(
-    @UserAuth() user: UserAuthEntity,
+    @UserAuth() token: TokenAuthEntity,
     @Param('id') id: string,
   ) {
     const company = await this.companiesService.findOne(+id);
@@ -74,12 +74,12 @@ export class CompaniesController {
   @ApiBearerAuth('jwt-dealer')
   @Get('by-dealer/:id')
   async findOneByDealer(
-    @UserAuth() user: UserAuthEntity,
+    @UserAuth() token: TokenAuthEntity,
     @Param('id') id: string,
   ) {
     const company = await this.companiesService.findOneByDealer(
       +id,
-      user.user.dealer.id,
+      token.dealer.id,
     );
     if (!company) {
       this.companyExceptions.companyNotFound();
@@ -100,11 +100,11 @@ export class CompaniesController {
   async update(
     @Req() req: Request,
     @Body() body: UpdateCompanyDto,
-    @UserAuth() user: UserAuthEntity,
+    @UserAuth() token: TokenAuthEntity,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     if (file) {
-      const path = `uploads/company/${user.user.company.id}`;
+      const path = `uploads/company/${token.company.id}`;
       const fileName = `logo${extname(file.originalname)}`;
       const destination = this.filesService.uploadFile(path, fileName, file);
       body.photo = destination;
@@ -114,7 +114,7 @@ export class CompaniesController {
     console.log(body);
     console.log(file);
 
-    await this.companiesService.update(user.user.company.id, body);
+    await this.companiesService.update(token.company.id, body);
     return {};
   }
 }

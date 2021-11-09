@@ -43,4 +43,18 @@ export class ConsolidatedInventoriesService {
       ],
     });
   }
+
+  async findAll(companyId: number) {
+    return await this.consolidatedInventoryModel.findAll({
+      include: [
+        {
+          model: Employee,
+          where: {
+            companyId,
+          },
+          attributes: [],
+        },
+      ],
+    });
+  }
 }

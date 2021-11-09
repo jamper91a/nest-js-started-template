@@ -8,7 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserAuthEntity } from '../auth/entities/user-auth';
+import { TokenAuthEntity } from '../auth/entities/user-auth';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const user: UserAuthEntity = request.user;
+    const user: TokenAuthEntity = request.user;
     //TODO Change user.roles for the real property
     return this.matchRoles(roles, user.user.groupId);
   }

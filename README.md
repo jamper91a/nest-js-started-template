@@ -107,7 +107,7 @@ findAll()
 @Roles(Constants.groups.spectator)
 async
 edit(@UserAuth()
-user : UserAuthEntity
+user : TokenAuthEntity
 )
 {
 }
