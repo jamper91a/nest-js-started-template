@@ -55,6 +55,10 @@ export class ConsolidatedInventoriesController {
     return result;
   }
 
+  /**
+   * List all the consolidated inventories of the company of the current user.
+   * It will return even if they are collaborative or not. It is used in the front-end and app
+   */
   @Roles(
     Constants.groups.admin,
     Constants.groups.cashier,
@@ -65,6 +69,26 @@ export class ConsolidatedInventoriesController {
   async findAll(@UserAuth() token: TokenAuthEntity) {
     return await this.consolidatedInventoriesService.findAll(
       token.employee.companyId,
+    );
+  }
+
+  /**
+   * List all the consolidated inventories of the company of the current user filter by collaborative
+   */
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-admin')
+  @Get('list-by-collaborative/:collaborative')
+  async findByCollaborative(
+    @Param('collaborative') collaborative: boolean,
+    @UserAuth() token: TokenAuthEntity,
+  ) {
+    return await this.consolidatedInventoriesService.findByCollaborative(
+      token.employee.companyId,
+      collaborative,
     );
   }
 }

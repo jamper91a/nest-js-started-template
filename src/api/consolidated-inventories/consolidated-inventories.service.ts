@@ -57,4 +57,24 @@ export class ConsolidatedInventoriesService {
       ],
     });
   }
+
+  async findByCollaborative(companyId: number, collaborative: boolean) {
+    return await this.consolidatedInventoryModel.findAll({
+      include: [
+        {
+          model: Employee,
+          where: {
+            companyId,
+          },
+          attributes: [],
+        },
+        {
+          model: Inventory,
+          where: {
+            collaborative,
+          },
+        },
+      ],
+    });
+  }
 }
