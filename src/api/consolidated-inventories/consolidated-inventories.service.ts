@@ -6,6 +6,7 @@ import { ProductsZone } from '../products-zones/entities/products-zone.entity';
 import { Zone } from '../zones/entities/zone.entity';
 import { Epc } from '../epcs/entities/epc.entity';
 import { Product } from '../products/entities/product.entity';
+import { Employee } from '../employees/entities/employee.entity';
 
 @Injectable()
 export class ConsolidatedInventoriesService {
@@ -14,9 +15,11 @@ export class ConsolidatedInventoriesService {
     private consolidatedInventoryModel: typeof ConsolidatedInventory,
   ) {}
 
-  async lastOneByEmployee(employeeId: number) {
+  async lastOneByEmployee(employeeId: number, companyId: number) {
     return await this.consolidatedInventoryModel.findOne({
-      where: { employeeId },
+      where: {
+        employeeId,
+      },
       order: [['createdAt', 'DESC']],
       include: [
         {
@@ -25,8 +28,17 @@ export class ConsolidatedInventoriesService {
             {
               model: ProductsZone,
               include: [Zone, Epc, Product],
+              through: {
+                attributes: [],
+              },
             },
           ],
+        },
+        {
+          model: Employee,
+          where: {
+            companyId,
+          },
         },
       ],
     });
