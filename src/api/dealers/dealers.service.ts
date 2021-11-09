@@ -53,8 +53,8 @@ export class DealersService {
     return dealer;
   }
 
-  create(createDealerDto: CreateDealerDto) {
-    return 'This action adds a new dealer';
+  async create(createDealerDto: CreateDealerDto) {
+    return await this.dealerModel.create(createDealerDto, { include: [User] });
   }
 
   findAll() {

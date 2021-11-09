@@ -16,15 +16,19 @@ import { TokenAuthEntity } from '../../auth/entities/user-auth';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { CompaniesByDealerDto } from './dto/companies-by-dealer.dto';
+import { Public } from '../../decorator/public.decorator';
 
 @ApiTags('Dealers')
 @Controller('dealers')
 export class DealersController {
   constructor(private readonly dealersService: DealersService) {}
 
+  @Public()
   @Post()
-  create(@Body() createDealerDto: CreateDealerDto) {
-    return this.dealersService.create(createDealerDto);
+  async create(@Body() createDealerDto: CreateDealerDto) {
+    createDealerDto.user.groupId = Constants.groups.dealer;
+    createDealerDto.user.active = true;
+    return await this.dealersService.create(createDealerDto);
   }
 
   /**
