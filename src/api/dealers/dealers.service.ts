@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDealerDto } from './dto/create-dealer.dto';
-import { UpdateDealerDto } from './dto/update-dealer.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Dealer } from './entities/dealer.entity';
 import { User } from '../users/entities/user.entitity';
@@ -57,19 +56,22 @@ export class DealersService {
     return await this.dealerModel.create(createDealerDto, { include: [User] });
   }
 
-  findAll() {
-    return `This action returns all dealers`;
+  async findAllActive() {
+    return await this.dealerModel.findAll({
+      include: [
+        {
+          model: User,
+          where: {
+            active: true,
+          },
+        },
+      ],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} dealer`;
-  }
-
-  update(id: number, updateDealerDto: UpdateDealerDto) {
-    return `This action updates a #${id} dealer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} dealer`;
+  async findAll() {
+    return await this.dealerModel.findAll({
+      include: [User],
+    });
   }
 }

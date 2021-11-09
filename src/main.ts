@@ -50,10 +50,10 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
         name: 'JWT',
-        description: Constants.tokens.admin,
+        description: Constants.tokens.sAdmin,
         in: 'header',
       },
-      'jwt-admin',
+      'jwt-sadmin',
     )
     .addBearerAuth(
       {
