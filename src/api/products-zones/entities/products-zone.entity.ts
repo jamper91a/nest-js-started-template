@@ -17,7 +17,7 @@ import { InventoryProduct } from '../../inventories-products/entities/inventorie
 import { Zone } from '../../zones/entities/zone.entity';
 import { Sell } from '../../sells/entities/sell.entity';
 
-@Table({ tableName: 'productZone' })
+@Table({ tableName: 'productsZone' })
 export class ProductsZone extends Model {
   @Column admissionDate: Date;
   @Column transferDate: Date;

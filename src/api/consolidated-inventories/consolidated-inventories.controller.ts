@@ -1,34 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ConsolidatedInventoriesService } from './consolidated-inventories.service';
-import { CreateConsolidatedInventoryDto } from './dto/create-consolidated-inventory.dto';
-import { UpdateConsolidatedInventoryDto } from './dto/update-consolidated-inventory.dto';
+import { Roles } from '../../decorator/roles.decorator';
+import { Constants } from '../../util/constants';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserAuth } from '../../decorator/user.decorator';
+import { UserAuthEntity } from '../../auth/entities/user-auth';
 
+@ApiTags('Consolidated Inventories')
 @Controller('consolidated-inventories')
 export class ConsolidatedInventoriesController {
-  constructor(private readonly consolidatedInventoriesService: ConsolidatedInventoriesService) {}
+  constructor(
+    private readonly consolidatedInventoriesService: ConsolidatedInventoriesService,
+  ) {}
 
-  @Post()
-  create(@Body() createConsolidatedInventoryDto: CreateConsolidatedInventoryDto) {
-    return this.consolidatedInventoriesService.create(createConsolidatedInventoryDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.consolidatedInventoriesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.consolidatedInventoriesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateConsolidatedInventoryDto: UpdateConsolidatedInventoryDto) {
-    return this.consolidatedInventoriesService.update(+id, updateConsolidatedInventoryDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.consolidatedInventoriesService.remove(+id);
+  /**
+   * Find the last consolidated inventory of current user
+   */
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @Get('last')
+  async lastInventory(@UserAuth() user: UserAuthEntity) {
+    return await this.consolidatedInventoriesService.lastOneByEmployee(
+      user.user.employee.id,
+    );
   }
 }

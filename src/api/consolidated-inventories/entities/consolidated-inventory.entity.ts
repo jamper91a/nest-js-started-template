@@ -22,5 +22,5 @@ export class ConsolidatedInventory extends Model {
   employee: Employee;
 
   @HasMany(() => Inventory)
-  inventory: Inventory[];
+  inventories: Inventory[];
 }

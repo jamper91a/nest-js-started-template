@@ -27,7 +27,7 @@ export class Epc extends Model {
 
   @Unique
   @Column
-  ecp: string;
+  epc: string;
 
   @ForeignKey(() => Company)
   @Column
