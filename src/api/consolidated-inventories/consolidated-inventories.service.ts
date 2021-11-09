@@ -7,6 +7,10 @@ import { Zone } from '../zones/entities/zone.entity';
 import { Epc } from '../epcs/entities/epc.entity';
 import { Product } from '../products/entities/product.entity';
 import { Employee } from '../employees/entities/employee.entity';
+import { Sell } from '../sells/entities/sell.entity';
+import { Return } from '../returns/entities/return.entity';
+import { Company } from '../companies/entities/company.entity';
+import { Supplier } from '../suppliers/entities/supplier.entity';
 
 @Injectable()
 export class ConsolidatedInventoriesService {
@@ -73,6 +77,37 @@ export class ConsolidatedInventoriesService {
           where: {
             collaborative,
           },
+        },
+      ],
+    });
+  }
+
+  async listProductsByConsolidatedInventory(id: number) {
+    return await this.consolidatedInventoryModel.findOne({
+      where: {
+        id,
+      },
+      include: [
+        {
+          model: Inventory,
+          include: [
+            {
+              model: ProductsZone,
+              include: [
+                Zone,
+                Epc,
+                Sell,
+                Return,
+                {
+                  model: Product,
+                  include: [Company, Supplier],
+                },
+              ],
+              through: {
+                attributes: [],
+              },
+            },
+          ],
         },
       ],
     });

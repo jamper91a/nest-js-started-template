@@ -91,4 +91,21 @@ export class ConsolidatedInventoriesController {
       collaborative,
     );
   }
+
+  /**
+   * Find the inventories belongs to a consolidated inventory, after get the products if each if the inventories
+   * and return the information
+   */
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-admin')
+  @Get('list-products/:id')
+  async listProducts(@Param('id') id: number) {
+    return await this.consolidatedInventoriesService.listProductsByConsolidatedInventory(
+      id,
+    );
+  }
 }
