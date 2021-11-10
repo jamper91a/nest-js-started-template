@@ -35,7 +35,11 @@ export class EpcsController {
         dto.state = EpcStates.NOT_ASSIGNED;
         dto.companyId = createEpcDto.companyId;
       }
-      return this.epcsService.createSeveral(createEpcDto);
+      try {
+        return await this.epcsService.createSeveral(createEpcDto);
+      } catch (e) {
+        return this.exceptions.validationError(e);
+      }
     } else {
       this.exceptions.companyNoValid();
     }

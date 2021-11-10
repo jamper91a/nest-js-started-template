@@ -25,7 +25,7 @@ export class Epc extends Model {
   @Column
   state: number;
 
-  @Unique
+  @Unique({ name: 'EPC_ALREADY_USE', msg: 'Epc code already exits' })
   @Column
   epc: string;
 
