@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { EpcsService } from './epcs.service';
 import { CreateEpcDto } from './dto/create-epc.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -43,5 +43,22 @@ export class EpcsController {
     } else {
       this.exceptions.companyNoValid();
     }
+  }
+
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @Get(':epc')
+  async findOneByEpc(
+    @UserAuth() token: TokenAuthEntity,
+    @Param('epc') epc: string,
+  ) {
+    const result = await this.epcsService.findOneByEpcAndCompany(
+      epc,
+      token.employee.companyId,
+    );
+    if (!result) {
+      this.exceptions.epcNotFound();
+    }
+    return result;
   }
 }

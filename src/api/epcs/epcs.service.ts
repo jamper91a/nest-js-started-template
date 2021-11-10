@@ -26,4 +26,13 @@ export class EpcsService {
       }
     });
   }
+
+  async findOneByEpcAndCompany(epc: string, companyId: number) {
+    return await this.epcModel.findOne({
+      where: {
+        epc,
+        companyId,
+      },
+    });
+  }
 }

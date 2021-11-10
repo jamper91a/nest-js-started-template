@@ -5,6 +5,17 @@ export class EpcExceptions {
     throw new BadRequestException(null, 'Company no valid');
   }
 
+  epcNotFound() {
+    throw new BadRequestException(null, 'Epc not found');
+  }
+
+  epcCodeAlreadyUsed(epc: string) {
+    return new BadRequestException(
+      null,
+      ` ${epc} code already used. Please use another one`,
+    );
+  }
+
   validationError(e) {
     console.error(e.name);
     if (e.name === 'SequelizeUniqueConstraintError') {
@@ -17,7 +28,7 @@ export class EpcExceptions {
               error.value + ' epc code already used. Please use another one';
             break;
         }
-        return new BadRequestException(null, message);
+        return this.epcCodeAlreadyUsed(error.value);
       }
     } else {
       return e;
