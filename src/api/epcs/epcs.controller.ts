@@ -63,6 +63,10 @@ export class EpcsController {
     return result;
   }
 
+  /**
+   * Web service to get the report of the amount of epcs that every company has used. It is used by the dealer
+   * in the web page
+   */
   @Roles(Constants.groups.dealer)
   @ApiBearerAuth('jwt-dealer')
   @ApiResponse({
@@ -79,5 +83,17 @@ export class EpcsController {
       companyId,
       token.dealer.id,
     );
+  }
+
+  @Roles(Constants.groups.dealer)
+  @ApiBearerAuth('jwt-dealer')
+  @ApiResponse({
+    status: 200,
+    type: EpcsByCompanyMonthlyDto,
+    isArray: true,
+  })
+  @Get('stats-by-dealer/')
+  async statsEpcByDealerMonthly(@UserAuth() token: TokenAuthEntity) {
+    return await this.epcsService.findEpcsByDealerMonthly(token.dealer.id);
   }
 }
