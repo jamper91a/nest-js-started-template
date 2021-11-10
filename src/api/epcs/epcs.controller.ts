@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { EpcsService } from './epcs.service';
 import { CreateEpcDto } from './dto/create-epc.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { TokenAuthEntity } from '../../auth/entities/user-auth';
@@ -9,6 +9,7 @@ import { UserAuth } from '../../decorator/user.decorator';
 import { EpcStates } from './entities/epc-state.entity';
 import { CompaniesService } from '../companies/companies.service';
 import { EpcExceptions } from './exceptions/epc.exceptions';
+import { EpcsByCompanyMonthlyDto } from './folder/epcs-by-company-monthly.dto';
 
 @ApiTags('Epcs')
 @Controller('epcs')
@@ -60,5 +61,23 @@ export class EpcsController {
       this.exceptions.epcNotFound();
     }
     return result;
+  }
+
+  @Roles(Constants.groups.dealer)
+  @ApiBearerAuth('jwt-dealer')
+  @ApiResponse({
+    status: 200,
+    type: EpcsByCompanyMonthlyDto,
+    isArray: true,
+  })
+  @Get('stats-by-month/:companyId')
+  async statsEpcByCompanyMonthly(
+    @UserAuth() token: TokenAuthEntity,
+    @Param('companyId') companyId: number,
+  ) {
+    return await this.epcsService.findEpcsByCompanyIdMonthly(
+      companyId,
+      token.dealer.id,
+    );
   }
 }
