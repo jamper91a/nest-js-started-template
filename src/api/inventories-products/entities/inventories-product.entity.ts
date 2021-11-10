@@ -10,7 +10,7 @@ import { Inventory } from '../../inventories/entities/inventory.entity';
 import { Epc } from '../../epcs/entities/epc.entity';
 import { Zone } from '../../zones/entities/zone.entity';
 import { ProductsZone } from '../../products-zones/entities/products-zone.entity';
-import { epcStatesId } from '../../epcs/entities/epc-state.entity';
+import { EpcStates } from '../../epcs/entities/epc-state.entity';
 
 @Table({ tableName: 'inventoryProduct' })
 export class InventoryProduct extends Model {
@@ -51,7 +51,7 @@ export class InventoryProduct extends Model {
       include: [Epc],
     });
     if (productZone) {
-      if (productZone.epc.state !== epcStatesId.ASSIGNED) {
+      if (productZone.epc.state !== EpcStates.ASSIGNED) {
         throw new Error('error_IP03');
       }
     } else {

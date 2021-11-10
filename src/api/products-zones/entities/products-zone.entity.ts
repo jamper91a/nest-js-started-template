@@ -12,7 +12,7 @@ import { Product } from '../../products/entities/product.entity';
 import { Return } from '../../returns/entities/return.entity';
 import { Epc } from '../../epcs/entities/epc.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
-import { epcStatesId } from '../../epcs/entities/epc-state.entity';
+import { EpcStates } from '../../epcs/entities/epc-state.entity';
 import { InventoryProduct } from '../../inventories-products/entities/inventories-product.entity';
 import { Zone } from '../../zones/entities/zone.entity';
 import { Sell } from '../../sells/entities/sell.entity';
@@ -69,7 +69,7 @@ export class ProductsZone extends Model {
     const epc = await Epc.findOne({
       where: {
         id: productsZone.epcId,
-        state: epcStatesId.NOT_ASSIGNED,
+        state: EpcStates.NOT_ASSIGNED,
       },
     });
 

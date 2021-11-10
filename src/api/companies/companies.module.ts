@@ -10,5 +10,6 @@ import { FilesService } from '../../util/files.service';
   controllers: [CompaniesController],
   providers: [CompaniesService, CompanyExceptions, FilesService],
   imports: [SequelizeModule.forFeature([Company])],
+  exports: [CompaniesService],
 })
 export class CompaniesModule {}

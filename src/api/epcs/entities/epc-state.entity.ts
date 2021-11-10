@@ -5,6 +5,14 @@ export class EpcStateEntity {
   name: string;
 }
 
+export enum EpcStates {
+  NOT_ASSIGNED,
+  ASSIGNED,
+  USED,
+  SOLD,
+  MISSING,
+}
+
 export const epcStates: EpcStateEntity[] = [
   { id: 0, name: Constants.epc.states.NOT_ASSIGNED },
   { id: 1, name: Constants.epc.states.ASSIGNED },
@@ -12,11 +20,3 @@ export const epcStates: EpcStateEntity[] = [
   { id: 3, name: Constants.epc.states.SOLD },
   { id: 4, name: Constants.epc.states.MISSING },
 ];
-
-export const epcStatesId = {
-  NOT_ASSIGNED: 0,
-  ASSIGNED: 1,
-  USED: 2,
-  SOLD: 3,
-  MISSING: 4,
-};
