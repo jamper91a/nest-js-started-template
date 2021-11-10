@@ -2,7 +2,7 @@ import { EpcStates } from '../entities/epc-state.entity';
 import { ApiHideProperty } from '@nestjs/swagger';
 
 class EpcDto {
-  epc: string;
+  code: string;
   @ApiHideProperty()
   companyId: number;
   @ApiHideProperty()

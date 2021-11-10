@@ -47,13 +47,13 @@ export class EpcsController {
 
   @Roles(Constants.groups.cashier, Constants.groups.warehouse)
   @ApiBearerAuth('jwt-employee')
-  @Get(':epc')
+  @Get(':code')
   async findOneByEpc(
     @UserAuth() token: TokenAuthEntity,
-    @Param('epc') epc: string,
+    @Param('code') code: string,
   ) {
     const result = await this.epcsService.findOneByEpcAndCompany(
-      epc,
+      code,
       token.employee.companyId,
     );
     if (!result) {

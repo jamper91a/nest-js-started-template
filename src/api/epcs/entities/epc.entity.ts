@@ -27,7 +27,7 @@ export class Epc extends Model {
 
   @Unique({ name: 'EPC_ALREADY_USE', msg: 'Epc code already exits' })
   @Column
-  epc: string;
+  code: string;
 
   @ForeignKey(() => Company)
   @Column
