@@ -8,5 +8,6 @@ import { ReturnHistory } from './entities/returns-history.entity';
   controllers: [ReturnsHistoryController],
   providers: [ReturnsHistoryService],
   imports: [SequelizeModule.forFeature([ReturnHistory])],
+  exports: [ReturnsHistoryService],
 })
 export class ReturnsHistoryModule {}

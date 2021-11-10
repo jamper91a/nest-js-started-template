@@ -3,6 +3,7 @@ import { CreateReturnsHistoryDto } from './dto/create-returns-history.dto';
 import { UpdateReturnsHistoryDto } from './dto/update-returns-history.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ReturnHistory } from './entities/returns-history.entity';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class ReturnsHistoryService {
@@ -13,6 +14,16 @@ export class ReturnsHistoryService {
 
   create(createReturnsHistoryDto: CreateReturnsHistoryDto) {
     return 'This action adds a new returnsHistory';
+  }
+
+  async createSeveral(
+    dtos: CreateReturnsHistoryDto[],
+    transaction: Transaction,
+  ) {
+    await this.returnsHistoryModel.bulkCreate(dtos, {
+      individualHooks: true,
+      transaction,
+    });
   }
 
   findAll() {

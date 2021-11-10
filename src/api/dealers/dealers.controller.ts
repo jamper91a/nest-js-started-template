@@ -61,7 +61,7 @@ export class DealersController {
     return this.dealersService.findOne(id);
   }
 
-  @Roles(Constants.groups.superAdmin)
+  @Roles(Constants.groups.superAdmin, Constants.groups.admin)
   @ApiBearerAuth('jwt-sadmin')
   @Patch(':id')
   update(@Param('id') id: number, @Body() dto: UpdateDealerDto) {
