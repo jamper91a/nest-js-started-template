@@ -85,6 +85,9 @@ export class EpcsController {
     );
   }
 
+  /**
+   * Get the amount of tags every dealer create by month. It is used by the dealer on the web site
+   */
   @Roles(Constants.groups.dealer)
   @ApiBearerAuth('jwt-dealer')
   @ApiResponse({

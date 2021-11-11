@@ -3,6 +3,7 @@ import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Inventory } from './entities/inventory.entity';
+import { literal, Transaction } from 'sequelize';
 
 @Injectable()
 export class InventoriesService {
@@ -19,8 +20,8 @@ export class InventoriesService {
     return `This action returns all inventories`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} inventory`;
+  async findOne(id: number) {
+    return this.inventoryModel.findOne({ where: { id } });
   }
 
   update(id: number, updateInventoryDto: UpdateInventoryDto) {
@@ -29,5 +30,21 @@ export class InventoriesService {
 
   remove(id: number) {
     return `This action removes a #${id} inventory`;
+  }
+
+  updateInventoryMessage(
+    id: number,
+    newMessage: string,
+    transaction: Transaction,
+  ) {
+    return this.inventoryModel.update(
+      {
+        message: literal('messages' + '.' + newMessage),
+      },
+      {
+        where: { id },
+        transaction,
+      },
+    );
   }
 }

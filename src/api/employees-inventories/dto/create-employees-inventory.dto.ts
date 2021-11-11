@@ -1,1 +1,4 @@
-export class CreateEmployeesInventoryDto {}
+export class CreateEmployeesInventoryDto {
+  inventoryId: number;
+  employeeId: number;
+}
