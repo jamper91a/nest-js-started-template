@@ -11,6 +11,8 @@ import { Sell } from '../sells/entities/sell.entity';
 import { Return } from '../returns/entities/return.entity';
 import { Company } from '../companies/entities/company.entity';
 import { Supplier } from '../suppliers/entities/supplier.entity';
+import { Transaction } from 'sequelize';
+import { ConsolidatedInventoryDto } from './dto/consolidated-inventory.dto';
 
 @Injectable()
 export class ConsolidatedInventoriesService {
@@ -111,5 +113,9 @@ export class ConsolidatedInventoriesService {
         },
       ],
     });
+  }
+
+  async create(dto: ConsolidatedInventoryDto, transaction: Transaction) {
+    return await this.consolidatedInventoryModel.create(dto, { transaction });
   }
 }

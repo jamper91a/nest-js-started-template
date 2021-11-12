@@ -15,5 +15,6 @@ import { InventoryExceptions } from './exceptions/inventory.exceptions';
     EmployeesInventoriesModule,
     InventoriesProductsModule,
   ],
+  exports: [InventoriesService, InventoryExceptions],
 })
 export class InventoriesModule {}

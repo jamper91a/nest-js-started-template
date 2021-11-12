@@ -4,6 +4,7 @@ import { UpdateInventoryDto } from './dto/update-inventory.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Inventory } from './entities/inventory.entity';
 import { literal, Transaction } from 'sequelize';
+import { FindAttributeOptions, Includeable } from 'sequelize/types/lib/model';
 
 @Injectable()
 export class InventoriesService {
@@ -22,6 +23,14 @@ export class InventoriesService {
 
   async findOne(id: number) {
     return this.inventoryModel.findOne({ where: { id } });
+  }
+
+  async findAllById(
+    id: number[],
+    attributes?: FindAttributeOptions,
+    include?: Includeable[],
+  ) {
+    return this.inventoryModel.findAll({ where: { id }, attributes, include });
   }
 
   update(id: number, updateInventoryDto: UpdateInventoryDto) {
@@ -45,6 +54,17 @@ export class InventoriesService {
         where: { id },
         transaction,
       },
+    );
+  }
+
+  async updateConsolidatedInventory(
+    ids: number[],
+    consolidatedInventoryId: number,
+    transaction: Transaction,
+  ) {
+    return await this.inventoryModel.update(
+      { consolidatedInventoryId },
+      { where: { id: ids }, transaction },
     );
   }
 }
