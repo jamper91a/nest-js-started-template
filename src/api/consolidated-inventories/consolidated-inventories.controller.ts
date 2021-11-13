@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserAuth } from '../../decorator/user.decorator';
 import { TokenAuthEntity } from '../../auth/entities/user-auth';
 import { ConsolidatedInventoriesExceptions } from './exceptions/consolidated-inventories.exceptions';
-import { CreateConsolidateInventoryDto } from '../inventories/dto/create-consolidate-inventory.dto';
+import { CreateConsolidateInventoryDto } from './dto/create-consolidate-inventory.dto';
 import { ProductsZone } from '../products-zones/entities/products-zone.entity';
 import { Sequelize } from 'sequelize-typescript';
 import { EmployeesInventoriesService } from '../employees-inventories/employees-inventories.service';

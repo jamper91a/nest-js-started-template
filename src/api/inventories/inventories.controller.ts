@@ -1,4 +1,4 @@
-import { Body, Controller, Patch } from '@nestjs/common';
+import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { InventoriesService } from './inventories.service';
 import { AttachInventoryDto } from './dto/attach-inventory.dto';
 import { Sequelize } from 'sequelize-typescript';
@@ -6,12 +6,14 @@ import { UserAuth } from '../../decorator/user.decorator';
 import { TokenAuthEntity } from '../../auth/entities/user-auth';
 import { EmployeesInventoriesService } from '../employees-inventories/employees-inventories.service';
 import { InventoriesProductsService } from '../inventories-products/inventories-products.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { InventoryExceptions } from './exceptions/inventory.exceptions';
 import { InventoriesProductExceptions } from '../inventories-products/exceptions/inventories-product.exceptions';
 import { EmployeesInventoryExceptions } from '../employees-inventories/exceptions/employees-inventory.exceptions';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
+import { CreateInventoryDto } from './dto/create-inventory.dto';
+import { CreateInventoryResponseDto } from './response/create-inventory.response.dto';
 
 @ApiTags('Inventories')
 @Controller('inventories')
@@ -72,5 +74,41 @@ export class InventoriesController {
     } else {
       return this.inventoriesExceptions.inventoryIsNotCollaborative();
     }
+  }
+
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @ApiCreatedResponse({ type: CreateInventoryResponseDto })
+  @Post('')
+  async create(
+    @UserAuth() token: TokenAuthEntity,
+    @Body() dto: CreateInventoryDto,
+  ) {
+    dto.partial = true;
+    dto.collaborative = false;
+    return await this.sequelize.transaction(async (transaction) => {
+      const inventory = await this.inventoriesService.create(dto, transaction);
+      // Una vez creado el inventario, le asocio el usuario
+      const employeesInventory = await this.employeesInventoriesService.create(
+        {
+          inventoryId: inventory.id,
+          employeeId: token.employee.id,
+        },
+        transaction,
+      );
+      dto.inventoriesProduct.forEach(
+        (product) => (product.inventoryId = inventory.id),
+      );
+      const inventoriesProduct =
+        await this.inventoriesProductsService.createSeveral(
+          dto.inventoriesProduct,
+          transaction,
+        );
+      return {
+        inventory,
+        employeesInventory,
+        inventoriesProduct,
+      };
+    });
   }
 }

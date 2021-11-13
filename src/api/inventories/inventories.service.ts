@@ -13,8 +13,13 @@ export class InventoriesService {
     private inventoryModel: typeof Inventory,
   ) {}
 
-  create(createInventoryDto: CreateInventoryDto) {
-    return 'This action adds a new inventory';
+  async create(
+    createInventoryDto: CreateInventoryDto,
+    transaction: Transaction,
+  ) {
+    return await this.inventoryModel.create(createInventoryDto, {
+      transaction,
+    });
   }
 
   findAll() {

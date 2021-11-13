@@ -11,12 +11,15 @@ export class InventoriesProductsService {
     private inventoriesProductModel: typeof InventoryProduct,
   ) {}
 
-  createSeveral(
+  async createSeveral(
     createInventoriesProductDto: CreateInventoriesProductDto[],
     transaction: Transaction,
   ) {
-    return this.inventoriesProductModel.create(createInventoriesProductDto, {
-      transaction,
-    });
+    return await this.inventoriesProductModel.bulkCreate(
+      createInventoriesProductDto,
+      {
+        transaction,
+      },
+    );
   }
 }

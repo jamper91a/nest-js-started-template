@@ -1,7 +1,7 @@
-import { MinLength } from 'class-validator';
+import { ArrayMinSize } from 'class-validator';
 
 export class CreateConsolidateInventoryDto {
-  @MinLength(2)
+  @ArrayMinSize(2)
   inventories: number[];
   name: string;
 }
