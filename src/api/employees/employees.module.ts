@@ -8,5 +8,6 @@ import { Employee } from './entities/employee.entity';
   controllers: [EmployeesController],
   providers: [EmployeesService],
   imports: [SequelizeModule.forFeature([Employee])],
+  exports: [EmployeesService],
 })
 export class EmployeesModule {}

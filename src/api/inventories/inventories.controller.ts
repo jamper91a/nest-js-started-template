@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { InventoriesService } from './inventories.service';
 import { AttachInventoryDto } from './dto/attach-inventory.dto';
 import { Sequelize } from 'sequelize-typescript';
@@ -14,6 +14,8 @@ import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { CreateInventoryResponseDto } from './response/create-inventory.response.dto';
+import { ListInventoryDto } from './dto/list-inventory.dto';
+import { EmployeesService } from '../employees/employees.service';
 
 @ApiTags('Inventories')
 @Controller('inventories')
@@ -22,6 +24,7 @@ export class InventoriesController {
     private readonly inventoriesService: InventoriesService,
     private readonly sequelize: Sequelize,
     private readonly employeesInventoriesService: EmployeesInventoriesService,
+    private readonly employeesService: EmployeesService,
     private readonly inventoriesProductsService: InventoriesProductsService,
     private readonly inventoriesExceptions: InventoryExceptions,
     private readonly inventoriesProductExceptions: InventoriesProductExceptions,
@@ -76,6 +79,9 @@ export class InventoriesController {
     }
   }
 
+  /**
+   * Create an inventory. It is used in the app by warehouse
+   */
   @Roles(Constants.groups.cashier, Constants.groups.warehouse)
   @ApiBearerAuth('jwt-employee')
   @ApiCreatedResponse({ type: CreateInventoryResponseDto })
@@ -110,5 +116,35 @@ export class InventoriesController {
         inventoriesProduct,
       };
     });
+  }
+
+  /**
+   * Esta funcion se encargara de listar los inventories creados y no consolidados, con el fin de seleccionar
+   * inventorarios para consolidar.
+   * Busco los usuario que pertenecen a una compania
+   * Busco los inventories creados por esos usuarios
+   */
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @Get('')
+  async listByCompany(
+    @UserAuth() token: TokenAuthEntity,
+    @Query() dto: ListInventoryDto,
+  ) {
+    const employees =
+      await this.employeesService.findByCompanyIdWithInventories(
+        token.employee.companyId,
+        dto.type,
+        dto.collaborative,
+      );
+
+    //join all inventories in one
+    let inventories = [];
+    for (const employee of employees) {
+      inventories = inventories.concat(employee.inventories);
+    }
+    //Because inventories are arrays we must
+
+    return inventories;
   }
 }
