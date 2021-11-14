@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { InventoriesService } from './inventories.service';
 import { AttachInventoryDto } from './dto/attach-inventory.dto';
 import { Sequelize } from 'sequelize-typescript';
@@ -146,5 +154,16 @@ export class InventoriesController {
     //Because inventories are arrays we must
 
     return inventories;
+  }
+
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @Get('products/:id')
+  async listProductsById(
+    @UserAuth() token: TokenAuthEntity,
+    @Param('id') id: number,
+  ) {
+    const inventory = await this.inventoriesService.findProductsById(id);
+    return inventory;
   }
 }

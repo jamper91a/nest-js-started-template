@@ -5,6 +5,12 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Inventory } from './entities/inventory.entity';
 import { literal, Transaction } from 'sequelize';
 import { FindAttributeOptions, Includeable } from 'sequelize/types/lib/model';
+import { Zone } from '../zones/entities/zone.entity';
+import { ProductsZone } from '../products-zones/entities/products-zone.entity';
+import { Product } from '../products/entities/product.entity';
+import { Return } from '../returns/entities/return.entity';
+import { Sell } from '../sells/entities/sell.entity';
+import { Epc } from '../epcs/entities/epc.entity';
 
 @Injectable()
 export class InventoriesService {
@@ -71,5 +77,24 @@ export class InventoriesService {
       { consolidatedInventoryId },
       { where: { id: ids }, transaction },
     );
+  }
+
+  async findProductsById(id: number) {
+    return this.inventoryModel.findOne({
+      where: {
+        id,
+      },
+      include: [
+        Zone,
+        {
+          model: ProductsZone,
+          include: [Product, Zone, Return, Sell, Epc],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+      attributes: [],
+    });
   }
 }
