@@ -13,11 +13,16 @@ export class InventoryErp extends Model {
   @Column({
     type: DataType.JSON,
   })
-  products: any;
+  products: InventoryErpProduct[];
   @ForeignKey(() => Shop)
   @Column
   shopId: number;
 
   @BelongsTo(() => Shop)
   shop: Shop;
+}
+
+class InventoryErpProduct {
+  ean: string;
+  total: number;
 }
