@@ -2,7 +2,6 @@ import {
   BelongsTo,
   Column,
   ForeignKey,
-  IsUrl,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -22,7 +21,7 @@ export class Product extends Model {
   @Column category: string;
   @Column description: string;
   @Column amount: number;
-  @IsUrl @Column({ allowNull: true }) image?: string;
+  @Column({ allowNull: true }) image?: string;
   @Column costPrice: number;
   @Column sellPrice: number;
 

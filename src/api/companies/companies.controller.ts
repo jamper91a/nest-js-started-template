@@ -116,8 +116,6 @@ export class CompaniesController {
     } else {
       delete body.photo;
     }
-    console.log(body);
-    console.log(file);
 
     await this.companiesService.update(token.company.id, body);
     return {};

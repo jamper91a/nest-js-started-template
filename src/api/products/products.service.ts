@@ -3,6 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from './entities/product.entity';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class ProductsService {
@@ -11,8 +12,8 @@ export class ProductsService {
     private productModel: typeof Product,
   ) {}
 
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  async create(createProductDto: CreateProductDto, transaction: Transaction) {
+    return await this.productModel.create(createProductDto, { transaction });
   }
 
   findAll() {
