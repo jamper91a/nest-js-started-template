@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -22,6 +23,9 @@ import { extname } from 'path';
 import { FastifyFileInterceptor } from '../../interceptor/fastify-file-interceptor';
 import { imageFileFilter } from '../../util/file-upload-util';
 import { memoryStorage } from 'multer';
+import { CreatePdfTestDto } from './dto/create-pdf-test.dto';
+import { Public } from '../../decorator/public.decorator';
+import { PdfService } from '../../services/pdf/pdf.service';
 
 @ApiTags('Companies')
 @Controller('companies')
@@ -30,6 +34,7 @@ export class CompaniesController {
     private readonly companiesService: CompaniesService,
     private readonly companyExceptions: CompanyExceptions,
     private readonly filesService: FilesService,
+    private readonly pdfService: PdfService,
   ) {}
 
   /**
@@ -116,5 +121,11 @@ export class CompaniesController {
 
     await this.companiesService.update(token.company.id, body);
     return {};
+  }
+
+  @Public()
+  @Post('pdf')
+  async pdf(@Body() body: CreatePdfTestDto) {
+    this.pdfService.generatePdf(body.templateId, body.data);
   }
 }

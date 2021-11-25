@@ -32,6 +32,8 @@ import { SuppliersModule } from './api/suppliers/suppliers.module';
 import { TransfersModule } from './api/transfers/transfers.module';
 import { TransfersProductsZonesModule } from './api/transfers-products-zones/transfers-products-zones.module';
 import { ZonesModule } from './api/zones/zones.module';
+import { PdfModule } from './services/pdf/pdf.module';
+import { HttpModuleModule } from './services/http-module/http-module.module';
 
 @Module({
   imports: [
@@ -78,6 +80,8 @@ import { ZonesModule } from './api/zones/zones.module';
     TransfersModule,
     TransfersProductsZonesModule,
     ZonesModule,
+    PdfModule,
+    HttpModuleModule,
   ],
   controllers: [],
   providers: [

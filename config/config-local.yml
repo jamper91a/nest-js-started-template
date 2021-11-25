@@ -9,3 +9,9 @@ db:
     database: 'inventariorealen2'
     username: 'root'
     password: 'jamper91'
+
+pdf:
+  api:
+    key: '9e482d34a153b68f5084e49a1ab84d2e6f0c50ac0d484d0ef29a13da7c9e1d94'
+    secret: '2faeba2347fb3bef501a41881983775bed32c37ddc0569b82fc7a06b3b31aef0'
+  workspace: 'jamper91@hotmail.com'
