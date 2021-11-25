@@ -109,9 +109,30 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  /**
+   * Find one product by the ean/plu code. It is used in the app and the front-end
+   * @param code
+   */
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-admin')
+  @Get(':code')
+  async findOne(
+    @Param('code') code: string,
+    @UserAuth() token: TokenAuthEntity,
+  ) {
+    const product = await this.productsService.findOneByCode(
+      code,
+      token.employee.companyId,
+    );
+    if (!product) {
+      this.productExceptions.productNoFound();
+    } else {
+      return product;
+    }
   }
 
   @Patch(':id')

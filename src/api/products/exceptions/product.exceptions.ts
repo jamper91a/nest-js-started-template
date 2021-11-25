@@ -12,4 +12,8 @@ export class ProductExceptions {
   productNoUpdated() {
     throw new BadRequestException(null, 'Product could not be update');
   }
+
+  productNoFound() {
+    throw new BadRequestException(null, 'Product could not be found');
+  }
 }

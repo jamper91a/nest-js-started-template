@@ -3,7 +3,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from './entities/product.entity';
-import { Transaction } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
+import { Company } from '../companies/entities/company.entity';
 
 @Injectable()
 export class ProductsService {
@@ -20,8 +21,14 @@ export class ProductsService {
     return `This action returns all products`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOneByCode(code: string, companyId: number) {
+    return await this.productModel.findOne({
+      where: {
+        [Op.or]: [{ ean: code }, { plu: code }, { plu2: code }, { plu3: code }],
+        companyId,
+      },
+      include: [Company],
+    });
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
