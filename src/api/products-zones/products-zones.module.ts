@@ -10,5 +10,6 @@ import { ProductsZonesExceptions } from './exceptions/products-zones.exceptions'
   controllers: [ProductsZonesController],
   providers: [ProductsZonesService, ProductsZonesExceptions],
   imports: [SequelizeModule.forFeature([ProductsZone]), ReturnsHistoryModule],
+  exports: [ProductsZonesService],
 })
 export class ProductsZonesModule {}

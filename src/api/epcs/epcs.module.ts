@@ -10,5 +10,6 @@ import { EpcExceptions } from './exceptions/epc.exceptions';
   controllers: [EpcsController],
   providers: [EpcsService, EpcExceptions],
   imports: [SequelizeModule.forFeature([Epc]), CompaniesModule],
+  exports: [EpcsService],
 })
 export class EpcsModule {}

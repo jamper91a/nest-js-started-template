@@ -28,10 +28,10 @@ export class EpcsService {
     });
   }
 
-  async findOneByEpcAndCompany(code: string, companyId: number) {
+  async findOneByCodeAndCompany(code: string, companyId: number) {
     return await this.epcModel.findOne({
       where: {
-        epc: code,
+        code,
         companyId,
       },
     });

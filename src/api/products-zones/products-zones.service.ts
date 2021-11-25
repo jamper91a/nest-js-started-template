@@ -81,4 +81,12 @@ export class ProductsZonesService {
       throw e;
     }
   }
+
+  async findOneByEpc(epcId: number) {
+    return await this.productsZoneModel.findOne({
+      where: {
+        epcId,
+      },
+    });
+  }
 }

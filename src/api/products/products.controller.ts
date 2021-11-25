@@ -1,11 +1,9 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Logger,
   Param,
-  Patch,
   Post,
   Req,
   UploadedFile,
@@ -13,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -28,6 +25,8 @@ import { FilesService } from '../../util/files.service';
 import { Product } from './entities/product.entity';
 import { Sequelize } from 'sequelize-typescript';
 import { ProductExceptions } from './exceptions/product.exceptions';
+import { EpcsService } from '../epcs/epcs.service';
+import { ProductsZonesService } from '../products-zones/products-zones.service';
 
 @ApiTags('Products')
 @Controller('products')
@@ -38,7 +37,9 @@ export class ProductsController {
     private readonly productsService: ProductsService,
     private readonly productExceptions: ProductExceptions,
     private readonly filesService: FilesService,
-    private sequelize: Sequelize,
+    private readonly sequelize: Sequelize,
+    private readonly epcService: EpcsService,
+    private readonly productsZonesService: ProductsZonesService,
   ) {}
 
   /**
@@ -104,11 +105,6 @@ export class ProductsController {
     });
   }
 
-  @Get()
-  findAll() {
-    return this.productsService.findAll();
-  }
-
   /**
    * Find one product by the ean/plu code. It is used in the app and the front-end
    * @param code
@@ -135,13 +131,24 @@ export class ProductsController {
     }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-admin')
+  @Get('by-epc/:code')
+  async findOneByEpc(
+    @Param('code') code: string,
+    @UserAuth() token: TokenAuthEntity,
+  ) {
+    const epc = await this.epcService.findOneByCodeAndCompany(
+      code,
+      token.employee.companyId,
+    );
+    if (epc) {
+      const productZone = await this.productsZonesService.findOneByEpc(epc.id);
+      return productZone.product;
+    }
   }
 }

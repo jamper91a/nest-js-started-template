@@ -53,7 +53,7 @@ export class EpcsController {
     @UserAuth() token: TokenAuthEntity,
     @Param('code') code: string,
   ) {
-    const result = await this.epcsService.findOneByEpcAndCompany(
+    const result = await this.epcsService.findOneByCodeAndCompany(
       code,
       token.employee.companyId,
     );
