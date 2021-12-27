@@ -16,4 +16,8 @@ export class ProductExceptions {
   productNoFound() {
     throw new BadRequestException(null, 'Product could not be found');
   }
+
+  productNoImported(err) {
+    throw new BadRequestException(err, 'Product could not be imported');
+  }
 }

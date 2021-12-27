@@ -3,6 +3,8 @@ import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Supplier } from './entities/supplier.entity';
+import { Constants } from '../../util/constants';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class SuppliersService {
@@ -11,8 +13,8 @@ export class SuppliersService {
     private supplierModel: typeof Supplier,
   ) {}
 
-  create(createSupplierDto: CreateSupplierDto) {
-    return 'This action adds a new supplier';
+  async create(createSupplierDto: CreateSupplierDto, transaction: Transaction) {
+    return await this.supplierModel.create(createSupplierDto, { transaction });
   }
 
   findAll() {
@@ -29,5 +31,37 @@ export class SuppliersService {
 
   remove(id: number) {
     return `This action removes a #${id} supplier`;
+  }
+
+  /**
+   * This will find the default supplier for a company
+   */
+  async findDefaultSupplier(companyId: number, transaction: Transaction) {
+    return await this.supplierModel.findOne({
+      where: {
+        name: Constants.defaultSupplier.name,
+        companyId,
+      },
+      transaction,
+    });
+  }
+
+  async createDefaultSupplier(companyId: number, transaction: Transaction) {
+    return await this.supplierModel.create(
+      {
+        name: Constants.defaultSupplier.name,
+        companyId,
+      },
+      { transaction },
+    );
+  }
+
+  async findByCompanyId(companyId: number, transaction: Transaction) {
+    return await this.supplierModel.findAll({
+      where: {
+        companyId,
+      },
+      transaction,
+    });
   }
 }

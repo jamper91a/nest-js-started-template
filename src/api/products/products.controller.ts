@@ -27,6 +27,9 @@ import { Sequelize } from 'sequelize-typescript';
 import { ProductExceptions } from './exceptions/product.exceptions';
 import { EpcsService } from '../epcs/epcs.service';
 import { ProductsZonesService } from '../products-zones/products-zones.service';
+import { ImportProductsDto } from './dto/import-products.dto';
+import { SuppliersService } from '../suppliers/suppliers.service';
+import { CreateSupplierDto } from '../suppliers/dto/create-supplier.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -40,6 +43,7 @@ export class ProductsController {
     private readonly sequelize: Sequelize,
     private readonly epcService: EpcsService,
     private readonly productsZonesService: ProductsZonesService,
+    private readonly suppliersService: SuppliersService,
   ) {}
 
   /**
@@ -170,6 +174,102 @@ export class ProductsController {
       return product;
     } else {
       this.productExceptions.productNoFound();
+    }
+  }
+
+  /**
+   * Find all the products of a company. It is used by the front-end by the admin
+   */
+  @Roles(Constants.groups.admin)
+  @ApiBearerAuth('jwt-admin')
+  @Get('by-company')
+  async findByCompany(@UserAuth() token: TokenAuthEntity) {
+    const products = await this.productsService.findOneByCompany(
+      token.company.id,
+    );
+    if (products) {
+      return products;
+    } else {
+      this.productExceptions.productNoFound();
+    }
+  }
+
+  /**
+   * Web service that would allow to create several products at the same time.
+   * It would be used in the front-end. It is used by the company's manager
+   */
+  @Roles(Constants.groups.admin)
+  @ApiBearerAuth('jwt-admin')
+  @Post('import-products')
+  async importProducts(
+    @UserAuth() token: TokenAuthEntity,
+    @Body() dto: ImportProductsDto,
+  ) {
+    const companyId = token.company.id;
+    //Set companyId to every product
+    const products = dto.products.map((product) => {
+      product.companyId = companyId;
+      return product;
+    });
+    try {
+      await this.sequelize.transaction(async (t) => {
+        let defaultSupplier = await this.suppliersService.findDefaultSupplier(
+          companyId,
+          t,
+        );
+        //If there is not default supplier, I create one
+        if (!defaultSupplier) {
+          defaultSupplier = await this.suppliersService.createDefaultSupplier(
+            companyId,
+            t,
+          );
+        }
+        //Find all supplier of this company
+        const allSuppliers = await this.suppliersService.findByCompanyId(
+          companyId,
+          t,
+        );
+        //Set the supplierId for every product
+        for (const product of products) {
+          //Product does not have a supplier name, we attach the default One
+          if (!product.supplier) {
+            product.supplierId = defaultSupplier.id;
+          } else {
+            let supplier = null;
+            /**
+             * We look if the name of the supplier provided match with any of previous suppliers
+             * for this company
+             */
+
+            if (allSuppliers) {
+              supplier = allSuppliers.find((supplier) => {
+                return (
+                  supplier.name.toLowerCase() === product.supplier.toLowerCase()
+                );
+              });
+            }
+            if (!supplier) {
+              const createSupplierDto: CreateSupplierDto = {
+                name: product.supplier,
+                companyId,
+              };
+              supplier = await this.suppliersService.create(
+                createSupplierDto,
+                t,
+              );
+              //Add new supplier to the list so we do not have to create him again
+              allSuppliers.push(supplier);
+            }
+            product.supplierId = supplier.id;
+          }
+        }
+        await this.productsService.createBulk(products, t);
+        return {};
+      });
+    } catch (err) {
+      this.productExceptions.productNoImported(err);
+      // Transaction has been rolled back
+      // err is whatever rejected the promise chain returned to the transaction callback
     }
   }
 }

@@ -52,4 +52,8 @@ export const Constants = {
     companyAdmin:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1LCJuYW1lIjoiR2VyZW50ZSBDYWxsZSA4MCIsInVzZXJuYW1lIjoiZ2VyZW50ZTgwQGlyLmNvbSIsInBhc3N3b3JkIjpudWxsLCJ1c2VybmFtZV9yZmRpIjpudWxsLCJwYXNzd29yZF9yZmRpIjpudWxsLCJhY3RpdmUiOnRydWUsImdyb3VwSWQiOjYsImNyZWF0ZWRBdCI6IjIwMTktMTEtMTVUMTU6Mjg6NTMuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTktMTEtMTVUMTU6Mjg6NTMuMDAwWiJ9LCJpYXQiOjE2MzYzMjA3MjIsImV4cCI6MTY0MTUwNDcyMn0.WqybXYM3pbXu9qw1xdhG0hQcahT4vTyQadt07lKMs-U',
   },
+
+  defaultSupplier: {
+    name: 'Sin proovedor',
+  },
 };

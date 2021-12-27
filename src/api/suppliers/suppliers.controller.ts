@@ -17,7 +17,7 @@ export class SuppliersController {
 
   @Post()
   create(@Body() createSupplierDto: CreateSupplierDto) {
-    return this.suppliersService.create(createSupplierDto);
+    // return this.suppliersService.create(createSupplierDto);
   }
 
   @Get()

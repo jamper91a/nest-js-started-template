@@ -1,1 +1,4 @@
-export class CreateSupplierDto {}
+export class CreateSupplierDto {
+  name: string;
+  companyId: number;
+}
