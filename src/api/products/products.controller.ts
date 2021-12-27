@@ -151,4 +151,25 @@ export class ProductsController {
       return productZone.product;
     }
   }
+
+  /**
+   * Find one product by the id. It is used in the front-end by the admin when a product is going to be edit
+   */
+  @Roles(Constants.groups.admin)
+  @ApiBearerAuth('jwt-admin')
+  @Get('by-id/:id')
+  async findOneById(
+    @Param('id') id: number,
+    @UserAuth() token: TokenAuthEntity,
+  ) {
+    const product = await this.productsService.findOneById(
+      id,
+      token.company.id,
+    );
+    if (product) {
+      return product;
+    } else {
+      this.productExceptions.productNoFound();
+    }
+  }
 }
