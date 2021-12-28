@@ -4,6 +4,7 @@ import {
   Get,
   Logger,
   Param,
+  Patch,
   Post,
   Req,
   UploadedFile,
@@ -30,6 +31,7 @@ import { ProductsZonesService } from '../products-zones/products-zones.service';
 import { ImportProductsDto } from './dto/import-products.dto';
 import { SuppliersService } from '../suppliers/suppliers.service';
 import { CreateSupplierDto } from '../suppliers/dto/create-supplier.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -271,5 +273,63 @@ export class ProductsController {
       // Transaction has been rolled back
       // err is whatever rejected the promise chain returned to the transaction callback
     }
+  }
+
+  /**
+   * Web service that update a product for a company.
+   * It is used from the front end by the admin of the company
+   */
+  @Roles(Constants.groups.admin)
+  @ApiBearerAuth('jwt-admin')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FastifyFileInterceptor('photo', {
+      storage: memoryStorage(),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  @Patch('update-product/')
+  async update(
+    @Req() req: Request,
+    @Body() body: UpdateProductDto,
+    @UserAuth() token: TokenAuthEntity,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    console.log(body);
+    this.logger.debug(body);
+    const companyId = token.company.id;
+    return await this.sequelize.transaction(async (transaction) => {
+      try {
+        let path = '';
+        let fileName = '';
+        if (file) {
+          path = `uploads/company/${companyId}/product`;
+          fileName = `product-${body.id}${extname(file.originalname)}`;
+          const destination = this.filesService.uploadFile(
+            path,
+            fileName,
+            file,
+          );
+          if (destination) {
+            body.image = destination;
+          } else {
+            this.productExceptions.photoNoSaved();
+          }
+        } else {
+          delete body.image;
+        }
+        try {
+          await this.productsService.update(body, transaction);
+          return true;
+        } catch (e) {
+          this.logger.error(e);
+          this.filesService.removeFile(path, fileName);
+          this.productExceptions.productNoUpdated();
+        }
+      } catch (e) {
+        this.logger.error(e);
+        throw e;
+      }
+    });
   }
 }

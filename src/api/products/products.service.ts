@@ -5,6 +5,7 @@ import { Product } from './entities/product.entity';
 import { Op, Transaction } from 'sequelize';
 import { Company } from '../companies/entities/company.entity';
 import { NewImportProduct } from './dto/import-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -52,5 +53,11 @@ export class ProductsService {
 
   async createBulk(products: NewImportProduct[], transaction: Transaction) {
     return await this.productModel.bulkCreate(products, { transaction });
+  }
+
+  async update(product: UpdateProductDto, transaction: Transaction) {
+    return await this.productModel.update(product, {
+      where: { id: product.id },
+    });
   }
 }
