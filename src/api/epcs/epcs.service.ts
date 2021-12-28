@@ -4,7 +4,8 @@ import { Epc } from './entities/epc.entity';
 import { CreateEpcDto } from './dto/create-epc.dto';
 import { EpcExceptions } from './exceptions/epc.exceptions';
 import { Sequelize } from 'sequelize-typescript';
-import { col, fn } from 'sequelize';
+import { col, fn, Transaction } from 'sequelize';
+import { EpcStates } from './entities/epc-state.entity';
 
 @Injectable()
 export class EpcsService {
@@ -74,5 +75,38 @@ export class EpcsService {
       ],
       order: [fn('MONTH', col('createdAt')), fn('DAY', col('createdAt'))],
     });
+  }
+
+  async findNoAssignEpcByCode(
+    codes: string[],
+    companyId: number,
+    transaction?: Transaction,
+  ) {
+    return await this.epcModel.findAll({
+      where: {
+        code: codes,
+        companyId,
+        state: EpcStates.NOT_ASSIGNED,
+      },
+      transaction,
+    });
+  }
+
+  async updateState(
+    epcsId: number[],
+    state: EpcStates,
+    transaction: Transaction,
+  ): Promise<Epc[]> {
+    const result = await this.epcModel.update(
+      { state },
+      {
+        where: {
+          id: epcsId,
+        },
+        transaction,
+        returning: true,
+      },
+    );
+    return result[1];
   }
 }

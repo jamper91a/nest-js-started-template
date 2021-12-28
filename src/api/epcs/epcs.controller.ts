@@ -9,7 +9,7 @@ import { UserAuth } from '../../decorator/user.decorator';
 import { EpcStates } from './entities/epc-state.entity';
 import { CompaniesService } from '../companies/companies.service';
 import { EpcExceptions } from './exceptions/epc.exceptions';
-import { EpcsByCompanyMonthlyDto } from './folder/epcs-by-company-monthly.dto';
+import { EpcsByCompanyMonthlyDto } from './dto/epcs-by-company-monthly.dto';
 
 @ApiTags('Epcs')
 @Controller('epcs')

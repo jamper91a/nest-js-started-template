@@ -32,13 +32,14 @@ export class ProductsService {
     });
   }
 
-  async findOneById(id: number, companyId: number) {
+  async findOneById(id: number, companyId: number, transaction?: Transaction) {
     return await this.productModel.findOne({
       where: {
         id,
         companyId,
       },
       include: [Company],
+      transaction,
     });
   }
 

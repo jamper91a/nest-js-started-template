@@ -18,5 +18,6 @@ import { SuppliersModule } from '../suppliers/suppliers.module';
     ProductsZonesModule,
     SuppliersModule,
   ],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

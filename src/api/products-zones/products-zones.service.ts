@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateProductsZoneDto } from './dto/create-products-zone.dto';
+import {
+  CreateProductsZoneDto,
+  ProductsZoneDto,
+} from './dto/create-products-zone.dto';
 import { UpdateProductsZoneDto } from './dto/update-products-zone.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProductsZone } from './entities/products-zone.entity';
@@ -9,6 +12,7 @@ import { ProductsZonesExceptions } from './exceptions/products-zones.exceptions'
 import { Employee } from '../employees/entities/employee.entity';
 import { CreateReturnsHistoryDto } from '../returns-history/dto/create-returns-history.dto';
 import { CreateReturnDto } from './dto/create-return.dto';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class ProductsZonesService {
@@ -88,5 +92,9 @@ export class ProductsZonesService {
         epcId,
       },
     });
+  }
+
+  async createBulk(productsZone: ProductsZoneDto[], transaction: Transaction) {
+    this.productsZoneModel.bulkCreate(productsZone, { transaction });
   }
 }
