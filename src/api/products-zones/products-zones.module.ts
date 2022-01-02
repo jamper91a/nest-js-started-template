@@ -7,6 +7,7 @@ import { ReturnsHistoryModule } from '../returns-history/returns-history.module'
 import { ProductsZonesExceptions } from './exceptions/products-zones.exceptions';
 import { ProductsModule } from '../products/products.module';
 import { EpcsModule } from '../epcs/epcs.module';
+import { ZonesModule } from '../zones/zones.module';
 
 @Module({
   controllers: [ProductsZonesController],
@@ -16,6 +17,7 @@ import { EpcsModule } from '../epcs/epcs.module';
     ReturnsHistoryModule,
     forwardRef(() => ProductsModule),
     EpcsModule,
+    ZonesModule,
   ],
   exports: [ProductsZonesService],
 })

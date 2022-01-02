@@ -8,12 +8,13 @@ import { ProductsZonesExceptions } from './exceptions/products-zones.exceptions'
 import { Employee } from '../employees/entities/employee.entity';
 import { CreateReturnsHistoryDto } from '../returns-history/dto/create-returns-history.dto';
 import { CreateReturnDto } from './dto/create-return.dto';
-import { Transaction } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { Product } from '../products/entities/product.entity';
 import { Sell } from '../sells/entities/sell.entity';
 import { Return } from '../returns/entities/return.entity';
 import { Zone } from '../zones/entities/zone.entity';
 import { Shop } from '../shops/entities/shop.entity';
+import { Epc } from '../epcs/entities/epc.entity';
 
 @Injectable()
 export class ProductsZonesService {
@@ -95,6 +96,19 @@ export class ProductsZonesService {
           include: [Shop],
         },
       ],
+    });
+  }
+
+  async findAllNoSoldByZoneAndEpc(zonesId: number[], epcId: number) {
+    return await this.productsZoneModel.findAll({
+      where: {
+        zoneId: zonesId,
+        epcId,
+        sellId: {
+          [Op.or]: [{ [Op.gt]: 2 }, { [Op.is]: null }],
+        },
+      },
+      include: [Product, Zone, Epc],
     });
   }
 }

@@ -13,6 +13,7 @@ import { EpcsService } from '../epcs/epcs.service';
 import _ from 'underscore';
 import { ProductsZonesExceptions } from './exceptions/products-zones.exceptions';
 import { EpcStates } from '../epcs/entities/epc-state.entity';
+import { ZonesService } from '../zones/zones.service';
 
 @ApiTags('ProductsZones')
 @Controller('products-zones')
@@ -24,6 +25,7 @@ export class ProductsZonesController {
     private readonly productsZonesService: ProductsZonesService,
     private readonly productsService: ProductsService,
     private readonly epcsService: EpcsService,
+    private readonly zonesService: ZonesService,
     private readonly productsZoneExceptions: ProductsZonesExceptions,
   ) {}
 
@@ -150,6 +152,42 @@ export class ProductsZonesController {
         return productZone;
       } else {
         this.productsZoneExceptions.productsZoneNoFound(epc.code);
+      }
+    } else {
+      this.productsZoneExceptions.epcNoFound(code);
+    }
+  }
+
+  /**
+   * Find products in store by epc code.
+   * It is use by the admin in the mobile app
+   */
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-admin')
+  @Get('find-in-local-by-epc/:code')
+  async findInLocalByEpcCode(
+    @UserAuth() token: TokenAuthEntity,
+    @Param('code') code: string,
+  ) {
+    //Find the epc to check if exits for that company
+    const epc = await this.epcsService.findOneByCodeAndCompany(
+      code,
+      token.employee.companyId,
+    );
+    if (epc) {
+      const zones = await this.zonesService.findAllByShopId(
+        token.employee.shopId,
+      );
+      if (zones) {
+        const zonesId = _.map(zones, 'id');
+        return await this.productsZonesService.findAllNoSoldByZoneAndEpc(
+          zonesId,
+          epc.id,
+        );
       }
     } else {
       this.productsZoneExceptions.epcNoFound(code);
