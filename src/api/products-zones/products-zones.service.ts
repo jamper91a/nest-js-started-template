@@ -15,6 +15,7 @@ import { Return } from '../returns/entities/return.entity';
 import { Zone } from '../zones/entities/zone.entity';
 import { Shop } from '../shops/entities/shop.entity';
 import { Epc } from '../epcs/entities/epc.entity';
+import { Supplier } from '../suppliers/entities/supplier.entity';
 
 @Injectable()
 export class ProductsZonesService {
@@ -122,6 +123,55 @@ export class ProductsZonesService {
         },
       },
       include: [Product, Zone, Epc],
+    });
+  }
+
+  async findForReturnsReport(
+    firstDate: Date,
+    secondDate: Date,
+    returnsId: number[],
+    zonesId: number[],
+  ) {
+    return this.productsZoneModel.findAll({
+      where: {
+        [Op.or]: [
+          // Search all the product that were not transfer,
+          // belongs to the local and the created date is in the range.
+          {
+            //wasTransferred is null or wasTransferred = 0
+            wasTransferred: {
+              [Op.or]: [
+                {
+                  [Op.is]: null,
+                },
+                0,
+              ],
+            },
+            zoneId: zonesId,
+            updatedAt: {
+              [Op.between]: [firstDate, secondDate],
+            },
+          },
+          // Search all the products that were transfer and belongs to the local
+          // and the updated date is in the range
+          {
+            wasTransferred: 1,
+            zoneId: zonesId,
+            transferDate: {
+              [Op.between]: [firstDate, secondDate],
+            },
+          },
+        ],
+        returnId: returnsId,
+      },
+      include: [
+        Zone,
+        {
+          model: Product,
+          include: [Supplier],
+        },
+        Epc,
+      ],
     });
   }
 }

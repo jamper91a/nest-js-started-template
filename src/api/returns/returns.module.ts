@@ -10,5 +10,6 @@ import { ReturnExceptions } from './exceptions/return.exceptions';
   controllers: [ReturnsController],
   providers: [ReturnsService, ReturnExceptions],
   imports: [SequelizeModule.forFeature([Return]), ReturnsHistoryModule],
+  exports: [ReturnsService],
 })
 export class ReturnsModule {}

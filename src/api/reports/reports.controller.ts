@@ -1,42 +1,53 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ReportsService } from './reports.service';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
+import { Roles } from '../../decorator/roles.decorator';
+import { Constants } from '../../util/constants';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserAuth } from '../../decorator/user.decorator';
+import { TokenAuthEntity } from '../../auth/entities/user-auth';
+import { ReturnsByTypeDto } from './dto/returns-by-type.dto';
+import { ZonesService } from '../zones/zones.service';
+import _ from 'underscore';
+import { ReturnsService } from '../returns/returns.service';
+import { ProductsZonesService } from '../products-zones/products-zones.service';
 
+@ApiTags('Report')
 @Controller('reports')
 export class ReportsController {
-  constructor(private readonly reportsService: ReportsService) {}
+  constructor(
+    private readonly reportsService: ReportsService,
+    private readonly zonesService: ZonesService,
+    private readonly returnsService: ReturnsService,
+    private readonly productsZonesService: ProductsZonesService,
+  ) {}
 
-  @Post()
-  create(@Body() createReportDto: CreateReportDto) {
-    return this.reportsService.create(createReportDto);
-  }
+  /**
+   * Action that will list the return in the system by type (customer or supplier)
+   */
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-employee')
+  @Post('returns-by-type')
+  async returnsByType(
+    @UserAuth() token: TokenAuthEntity,
+    @Body() body: ReturnsByTypeDto,
+  ) {
+    if (!body.employee) {
+      body.employee = token.employee;
+    }
 
-  @Get()
-  findAll() {
-    return this.reportsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reportsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-    return this.reportsService.update(+id, updateReportDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reportsService.remove(+id);
+    const zones = await this.zonesService.findAllByShopId(body.employee.shopId);
+    const zonesId = _.map(zones, 'id');
+    const returns = await this.returnsService.findByType(body.type);
+    const returnsId = _.map(returns, 'id');
+    return await this.productsZonesService.findForReturnsReport(
+      body.firstDate,
+      body.secondDate,
+      returnsId,
+      zonesId,
+    );
   }
 }
