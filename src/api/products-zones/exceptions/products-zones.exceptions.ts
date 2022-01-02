@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 export class ProductsZonesExceptions {
   productsNoReturned() {
@@ -10,23 +10,22 @@ export class ProductsZonesExceptions {
   }
 
   epcNoFound(err) {
-    throw new BadRequestException(
-      err,
-      'Epc no found while trying to add products zone',
-    );
+    throw new BadRequestException(err, 'Epc no found');
   }
 
   productsZoneNoCreated(err) {
-    console.log(err);
     throw new BadRequestException(err, 'Products zone could not be create');
   }
 
   epcAlreadyUse(err) {
-    console.log(err);
     throw new BadRequestException(err, 'Epc already used');
   }
 
   productNoFound(err) {
     throw new BadRequestException(err, 'Product was not found');
+  }
+
+  productsZoneNoFound(err) {
+    throw new NotFoundException(err, 'Products zone could not be found');
   }
 }

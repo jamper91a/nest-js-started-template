@@ -1,9 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  CreateProductsZoneDto,
-  ProductsZoneDto,
-} from './dto/create-products-zone.dto';
-import { UpdateProductsZoneDto } from './dto/update-products-zone.dto';
+import { ProductsZoneDto } from './dto/create-products-zone.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProductsZone } from './entities/products-zone.entity';
 import { ReturnsHistoryService } from '../returns-history/returns-history.service';
@@ -13,6 +9,11 @@ import { Employee } from '../employees/entities/employee.entity';
 import { CreateReturnsHistoryDto } from '../returns-history/dto/create-returns-history.dto';
 import { CreateReturnDto } from './dto/create-return.dto';
 import { Transaction } from 'sequelize';
+import { Product } from '../products/entities/product.entity';
+import { Sell } from '../sells/entities/sell.entity';
+import { Return } from '../returns/entities/return.entity';
+import { Zone } from '../zones/entities/zone.entity';
+import { Shop } from '../shops/entities/shop.entity';
 
 @Injectable()
 export class ProductsZonesService {
@@ -25,26 +26,6 @@ export class ProductsZonesService {
     private sequelize: Sequelize,
     private exceptions: ProductsZonesExceptions,
   ) {}
-
-  create(createProductsZoneDto: CreateProductsZoneDto) {
-    return 'This action adds a new productsZone';
-  }
-
-  findAll() {
-    return `This action returns all productsZones`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} productsZone`;
-  }
-
-  update(id: number, updateProductsZoneDto: UpdateProductsZoneDto) {
-    return `This action updates a #${id} productsZone`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} productsZone`;
-  }
 
   async returnProducts(employee: Employee, createReturnDto: CreateReturnDto) {
     //Create all the returnHistoryObjects
@@ -95,6 +76,25 @@ export class ProductsZonesService {
   }
 
   async createBulk(productsZone: ProductsZoneDto[], transaction: Transaction) {
-    this.productsZoneModel.bulkCreate(productsZone, { transaction });
+    return await this.productsZoneModel.bulkCreate(productsZone, {
+      transaction,
+    });
+  }
+
+  async findOneByEpcId(epcId: number) {
+    return await this.productsZoneModel.findOne({
+      where: {
+        epcId: epcId,
+      },
+      include: [
+        Product,
+        Sell,
+        Return,
+        {
+          model: Zone,
+          include: [Shop],
+        },
+      ],
+    });
   }
 }

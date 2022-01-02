@@ -1,16 +1,6 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Logger,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
 import { ProductsZonesService } from './products-zones.service';
 import { CreateProductsZoneDto } from './dto/create-products-zone.dto';
-import { UpdateProductsZoneDto } from './dto/update-products-zone.dto';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -118,29 +108,6 @@ export class ProductsZonesController {
     });
   }
 
-  @Get()
-  findAll() {
-    return this.productsZonesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsZonesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateProductsZoneDto: UpdateProductsZoneDto,
-  ) {
-    return this.productsZonesService.update(+id, updateProductsZoneDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsZonesService.remove(+id);
-  }
-
   @Roles(
     Constants.groups.admin,
     Constants.groups.cashier,
@@ -148,13 +115,44 @@ export class ProductsZonesController {
   )
   @ApiBearerAuth('jwt-admin')
   @Post('return-products')
-  returnProducts(
+  async returnProducts(
     @UserAuth() token: TokenAuthEntity,
     @Body() createReturnDto: CreateReturnDto,
   ) {
-    return this.productsZonesService.returnProducts(
+    return await this.productsZonesService.returnProducts(
       token.employee,
       createReturnDto,
     );
+  }
+
+  /**
+   * Find a product zone and details using the epc code and the employee
+   * It is used in the mobile app by the sockets
+   */
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @Get('find-by-epc/:code')
+  async findByEpcCode(
+    @UserAuth() token: TokenAuthEntity,
+    @Param('code') code: string,
+  ) {
+    //Find the epc to check if exits for that company
+    const epc = await this.epcsService.findOneByCodeAndCompany(
+      code,
+      token.employee.companyId,
+    );
+    if (epc) {
+      //Find the product zone
+      const productZone = await this.productsZonesService.findOneByEpcId(
+        epc.id,
+      );
+      if (productZone) {
+        return productZone;
+      } else {
+        this.productsZoneExceptions.productsZoneNoFound(epc.code);
+      }
+    } else {
+      this.productsZoneExceptions.epcNoFound(code);
+    }
   }
 }
