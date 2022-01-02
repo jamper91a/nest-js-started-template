@@ -14,6 +14,7 @@ import _ from 'underscore';
 import { ProductsZonesExceptions } from './exceptions/products-zones.exceptions';
 import { EpcStates } from '../epcs/entities/epc-state.entity';
 import { ZonesService } from '../zones/zones.service';
+import { FindInLocalByIdDto } from './dto/find-in-local-by-id.dto';
 
 @ApiTags('ProductsZones')
 @Controller('products-zones')
@@ -188,9 +189,43 @@ export class ProductsZonesController {
           zonesId,
           epc.id,
         );
+      } else {
+        this.productsZoneExceptions.zonesNoFound(token.employee.shopId);
       }
     } else {
       this.productsZoneExceptions.epcNoFound(code);
+    }
+  }
+
+  /**
+   * Find products in store by epc id.
+   * It is use by the admin in the mobile app
+   */
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-admin')
+  @Post('find-in-local-by-id')
+  async findInLocalById(
+    @UserAuth() token: TokenAuthEntity,
+    @Body() body: FindInLocalByIdDto,
+  ) {
+    if (!body.employee) {
+      body.employee = token.employee;
+    }
+
+    //Find all zones for this employee using the shopId
+    const zones = await this.zonesService.findAllByShopId(body.employee.shopId);
+    if (zones) {
+      const zonesId = _.map(zones, 'id');
+      return await this.productsZonesService.findAllNoSoldByZoneAndProduct(
+        zonesId,
+        body.productId,
+      );
+    } else {
+      this.productsZoneExceptions.zonesNoFound(body.employee.shopId);
     }
   }
 }

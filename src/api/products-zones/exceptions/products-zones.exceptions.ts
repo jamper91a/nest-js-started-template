@@ -28,4 +28,8 @@ export class ProductsZonesExceptions {
   productsZoneNoFound(err) {
     throw new NotFoundException(err, 'Products zone could not be found');
   }
+
+  zonesNoFound(err) {
+    throw new NotFoundException(err, 'Zones could not be found');
+  }
 }

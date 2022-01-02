@@ -111,4 +111,17 @@ export class ProductsZonesService {
       include: [Product, Zone, Epc],
     });
   }
+
+  async findAllNoSoldByZoneAndProduct(zonesId: number[], productId: number) {
+    return await this.productsZoneModel.findAll({
+      where: {
+        zoneId: zonesId,
+        productId,
+        sellId: {
+          [Op.or]: [{ [Op.gt]: 2 }, { [Op.is]: null }],
+        },
+      },
+      include: [Product, Zone, Epc],
+    });
+  }
 }
