@@ -8,5 +8,6 @@ import { TransfersProductsZone } from './entities/transfers-products-zone.entity
   controllers: [TransfersProductsZonesController],
   providers: [TransfersProductsZonesService],
   imports: [SequelizeModule.forFeature([TransfersProductsZone])],
+  exports: [TransfersProductsZonesService],
 })
 export class TransfersProductsZonesModule {}

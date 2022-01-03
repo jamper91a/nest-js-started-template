@@ -126,7 +126,7 @@ export class ProductsZonesService {
     });
   }
 
-  async findForReturnsReport(
+  async findAllForReturnsReport(
     firstDate: Date,
     secondDate: Date,
     returnsId: number[],

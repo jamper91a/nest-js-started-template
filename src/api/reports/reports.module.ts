@@ -6,6 +6,8 @@ import { Report } from './entities/report.entity';
 import { ZonesModule } from '../zones/zones.module';
 import { ReturnsModule } from '../returns/returns.module';
 import { ProductsZonesModule } from '../products-zones/products-zones.module';
+import { InventoriesModule } from '../inventories/inventories.module';
+import { TransfersProductsZonesModule } from '../transfers-products-zones/transfers-products-zones.module';
 
 @Module({
   controllers: [ReportsController],
@@ -15,6 +17,8 @@ import { ProductsZonesModule } from '../products-zones/products-zones.module';
     ZonesModule,
     ReturnsModule,
     ProductsZonesModule,
+    InventoriesModule,
+    TransfersProductsZonesModule,
   ],
 })
 export class ReportsModule {}

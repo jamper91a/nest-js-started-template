@@ -97,4 +97,26 @@ export class InventoriesService {
       attributes: [],
     });
   }
+
+  async findAllProductsZoneByConsolidatedInventory(
+    consolidatedInventoryId: number,
+  ): Promise<ProductsZone[]> {
+    //Find all inventories of the first consolidated inventory
+    const inventories = await this.inventoryModel.findAll({
+      where: {
+        consolidatedInventoryId,
+      },
+      include: [
+        {
+          model: ProductsZone,
+          include: [Zone, Epc, Product],
+        },
+      ],
+    });
+    // Add the products of the first inventory to an var
+    let productsInInventory: ProductsZone[] = [];
+    for (const inventory of inventories)
+      productsInInventory = productsInInventory.concat(inventory.productsZone);
+    return productsInInventory;
+  }
 }
