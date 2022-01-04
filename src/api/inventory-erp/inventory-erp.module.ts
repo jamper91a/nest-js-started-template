@@ -8,5 +8,6 @@ import { InventoryErp } from './entities/inventory-erp.entity';
   controllers: [InventoryErpController],
   providers: [InventoryErpService],
   imports: [SequelizeModule.forFeature([InventoryErp])],
+  exports: [InventoryErpService],
 })
 export class InventoryErpModule {}

@@ -8,6 +8,7 @@ import { ReturnsModule } from '../returns/returns.module';
 import { ProductsZonesModule } from '../products-zones/products-zones.module';
 import { InventoriesModule } from '../inventories/inventories.module';
 import { TransfersProductsZonesModule } from '../transfers-products-zones/transfers-products-zones.module';
+import { InventoryErpModule } from '../inventory-erp/inventory-erp.module';
 
 @Module({
   controllers: [ReportsController],
@@ -19,6 +20,7 @@ import { TransfersProductsZonesModule } from '../transfers-products-zones/transf
     ProductsZonesModule,
     InventoriesModule,
     TransfersProductsZonesModule,
+    InventoryErpModule,
   ],
 })
 export class ReportsModule {}

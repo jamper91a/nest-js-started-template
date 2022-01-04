@@ -13,4 +13,14 @@ export class InventoryErpService {
   async create(shopId: number, products: ProductInventoryErpDto[]) {
     return await this.inventoryErpModel.create({ shopId, products });
   }
+
+  async findAllByShopId(shopId: number) {
+    return await this.inventoryErpModel.findAll({
+      where: {
+        shopId,
+      },
+      limit: 1,
+      order: [['id', 'DESC']],
+    });
+  }
 }

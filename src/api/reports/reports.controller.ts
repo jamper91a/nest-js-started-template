@@ -14,6 +14,10 @@ import { InventoriesService } from '../inventories/inventories.service';
 import { ReportsExceptions } from './exceptions/reports.exceptions';
 import { UtilService } from '../../util/util.service';
 import { TransfersProductsZonesService } from '../transfers-products-zones/transfers-products-zones.service';
+import { DifferenceWithInventoryErpDto } from './dto/difference-with-inventory-erp.dto';
+import { Sequelize } from 'sequelize-typescript';
+import { QueryTypes } from 'sequelize';
+import { InventoryErpService } from '../inventory-erp/inventory-erp.service';
 
 @ApiTags('Report')
 @Controller('reports')
@@ -27,6 +31,8 @@ export class ReportsController {
     private readonly reportsExceptions: ReportsExceptions,
     private readonly utilService: UtilService,
     private readonly transfersProductsZonesService: TransfersProductsZonesService,
+    private readonly sequelize: Sequelize,
+    private readonly inventoryErpService: InventoryErpService,
   ) {}
 
   /**
@@ -129,7 +135,67 @@ export class ReportsController {
         }
       }
     }
-
     return notFoundProducts;
+  }
+
+  /**
+   * Compare local inventory with one erp inventory uploaded by the user.
+   */
+  @Roles(
+    Constants.groups.admin,
+    Constants.groups.cashier,
+    Constants.groups.warehouse,
+  )
+  @ApiBearerAuth('jwt-employee')
+  @Post('difference-with-inventory-erp/')
+  async differenceWithInventoryErp(
+    @UserAuth() token: TokenAuthEntity,
+    @Body() dto: DifferenceWithInventoryErpDto,
+  ) {
+    const employee = dto.employee ? dto.employee : token.employee;
+    const totalProductsQuery = `
+            SELECT COUNT(1) as total,
+                   p.id,
+                   p.size,
+                   ean,
+                   plu,
+                   plu2,
+                   plu3,
+                   description,
+                   imagen
+            FROM products_has_zones phz,
+                 products p,
+                 zones z
+            WHERE p.company_id = $1
+              AND phz.product_id = p.id
+              AND phz.zone_id = z.id
+              AND z.shop_id = $2
+            GROUP BY p.id, p.size, p.ean, p.plu, p.plu2, p.plu3, description, imagen;`;
+    const allProducts: any[] = await this.sequelize.query(totalProductsQuery, {
+      replacements: [employee.companyId, employee.shopId],
+      type: QueryTypes.SELECT,
+    });
+    const lastInventoryErp = await this.inventoryErpService.findAllByShopId(
+      employee.shopId,
+    );
+    let lastInventoryErpProducts = [];
+    if (allProducts && lastInventoryErp) {
+      if (lastInventoryErp && lastInventoryErp.length > 0)
+        lastInventoryErpProducts = lastInventoryErp[0].products;
+      for (const product of allProducts) {
+        product.erp = 0;
+        for (const erpProduct of lastInventoryErpProducts) {
+          if (
+            product.ean === erpProduct.ean ||
+            product.plu === erpProduct.plu ||
+            product.plu2 === erpProduct.plu2 ||
+            product.plu3 === erpProduct.plu3
+          ) {
+            product.erp = erpProduct.total;
+          }
+        }
+      }
+    }
+    return allProducts;
   }
 }
