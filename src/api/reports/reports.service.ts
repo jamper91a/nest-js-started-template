@@ -38,4 +38,13 @@ export class ReportsService {
       ],
     });
   }
+
+  async findByTypeAndEmployeeId(type: number, employeeId: number[]) {
+    return await this.reportModel.findAll({
+      where: {
+        type,
+        employeeId,
+      },
+    });
+  }
 }

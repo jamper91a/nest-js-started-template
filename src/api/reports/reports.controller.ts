@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { Roles } from '../../decorator/roles.decorator';
 import { Constants } from '../../util/constants';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserAuth } from '../../decorator/user.decorator';
 import { TokenAuthEntity } from '../../auth/entities/user-auth';
 import { ReturnsByTypeDto } from './dto/returns-by-type.dto';
@@ -18,6 +18,8 @@ import { DifferenceWithInventoryErpDto } from './dto/difference-with-inventory-e
 import { Sequelize } from 'sequelize-typescript';
 import { QueryTypes } from 'sequelize';
 import { InventoryErpService } from '../inventory-erp/inventory-erp.service';
+import { reportTypesId } from './entities/report-type.entity';
+import { EmployeesService } from '../employees/employees.service';
 
 @ApiTags('Report')
 @Controller('reports')
@@ -33,6 +35,7 @@ export class ReportsController {
     private readonly transfersProductsZonesService: TransfersProductsZonesService,
     private readonly sequelize: Sequelize,
     private readonly inventoryErpService: InventoryErpService,
+    private readonly employeesService: EmployeesService,
   ) {}
 
   /**
@@ -208,5 +211,28 @@ export class ReportsController {
   async findById(@UserAuth() token: TokenAuthEntity, @Param('id') id: number) {
     const report = await this.reportsService.findById(id);
     return report;
+  }
+
+  /**
+   * Return the reports in the db. It is used in the mobile app
+   */
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @ApiParam({ name: 'type', enum: reportTypesId })
+  @Get('type/:type')
+  async findByType(@UserAuth() token: TokenAuthEntity, @Param('type') type) {
+    switch (type) {
+      case reportTypesId.DIFFERENCE_PHYSICAL_UNITS:
+        const employees = await this.employeesService.findByCompanyId(
+          token.company.id,
+        );
+        const employeesId = employees.map((e) => e.id);
+        const reports = await this.reportsService.findByTypeAndEmployeeId(
+          type,
+          employeesId,
+        );
+        return reports;
+        break;
+    }
   }
 }
