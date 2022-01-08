@@ -174,4 +174,13 @@ export class ProductsZonesService {
       ],
     });
   }
+
+  async findAllById(id: number[]) {
+    return await this.productsZoneModel.findAll({
+      where: {
+        id,
+      },
+      include: [Zone, Epc, Product],
+    });
+  }
 }

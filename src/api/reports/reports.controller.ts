@@ -198,4 +198,15 @@ export class ReportsController {
     }
     return allProducts;
   }
+
+  /**
+   * Get a report by an id. It is use in the mobile app
+   */
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @Get(':id')
+  async findById(@UserAuth() token: TokenAuthEntity, @Param('id') id: number) {
+    const report = await this.reportsService.findById(id);
+    return report;
+  }
 }
