@@ -8,5 +8,6 @@ import { ReportsProductsZone } from './entities/reports-products-zone.entity';
   controllers: [ReportsProductsZonesController],
   providers: [ReportsProductsZonesService],
   imports: [SequelizeModule.forFeature([ReportsProductsZone])],
+  exports: [ReportsProductsZonesService],
 })
 export class ReportsProductsZonesModule {}

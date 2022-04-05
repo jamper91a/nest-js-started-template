@@ -25,7 +25,7 @@ export class ReportsProductsZone extends Model {
 
   @ForeignKey(() => Employee)
   @Column
-  homologatorEmployeeId: number;
+  homologueEmployeeId: number;
   @BelongsTo(() => Employee)
-  homologatorEmployee: Employee;
+  homologueEmployee: Employee;
 }

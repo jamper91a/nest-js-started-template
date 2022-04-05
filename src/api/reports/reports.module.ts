@@ -12,6 +12,7 @@ import { InventoryErpModule } from '../inventory-erp/inventory-erp.module';
 import { ReportsExceptions } from './exceptions/reports.exceptions';
 import { UtilService } from '../../util/util.service';
 import { EmployeesModule } from '../employees/employees.module';
+import { ReportsProductsZonesModule } from '../reports-products-zones/reports-products-zones.module';
 
 @Module({
   controllers: [ReportsController],
@@ -25,6 +26,7 @@ import { EmployeesModule } from '../employees/employees.module';
     TransfersProductsZonesModule,
     InventoryErpModule,
     EmployeesModule,
+    ReportsProductsZonesModule,
   ],
 })
 export class ReportsModule {}

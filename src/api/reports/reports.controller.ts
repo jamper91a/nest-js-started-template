@@ -20,6 +20,8 @@ import { QueryTypes } from 'sequelize';
 import { InventoryErpService } from '../inventory-erp/inventory-erp.service';
 import { reportTypesId } from './entities/report-type.entity';
 import { EmployeesService } from '../employees/employees.service';
+import { HomologueUnitsDto } from './dto/homologue-units.dto';
+import { ReportsProductsZonesService } from '../reports-products-zones/reports-products-zones.service';
 
 @ApiTags('Report')
 @Controller('reports')
@@ -36,6 +38,7 @@ export class ReportsController {
     private readonly sequelize: Sequelize,
     private readonly inventoryErpService: InventoryErpService,
     private readonly employeesService: EmployeesService,
+    private readonly reportsProductsZonesService: ReportsProductsZonesService,
   ) {}
 
   /**
@@ -234,5 +237,18 @@ export class ReportsController {
         return reports;
         break;
     }
+  }
+
+  @Roles(Constants.groups.cashier, Constants.groups.warehouse)
+  @ApiBearerAuth('jwt-employee')
+  @Post('homologue')
+  async homologueUnits(
+    @UserAuth() token: TokenAuthEntity,
+    @Body() dto: HomologueUnitsDto,
+  ) {
+    return this.reportsProductsZonesService.homologueUnits(
+      dto,
+      token.employee.id,
+    );
   }
 }

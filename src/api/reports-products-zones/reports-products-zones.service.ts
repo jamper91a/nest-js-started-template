@@ -1,36 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReportsProductsZoneDto } from './dto/create-reports-products-zone.dto';
-import { UpdateReportsProductsZoneDto } from './dto/update-reports-products-zone.dto';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ReportsProductsZone } from './entities/reports-products-zone.entity';
+import { HomologueUnitsDto } from '../reports/dto/homologue-units.dto';
+import _ from 'underscore';
 
 @Injectable()
 export class ReportsProductsZonesService {
+  private readonly logger = new Logger(ReportsProductsZonesService.name);
+
   constructor(
     @InjectModel(ReportsProductsZone)
     private reportsProductsZoneModel: typeof ReportsProductsZone,
   ) {}
 
-  create(createReportsProductsZoneDto: CreateReportsProductsZoneDto) {
-    return 'This action adds a new reportsProductsZone';
-  }
-
-  findAll() {
-    return `This action returns all reportsProductsZones`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} reportsProductsZone`;
-  }
-
-  update(
-    id: number,
-    updateReportsProductsZoneDto: UpdateReportsProductsZoneDto,
-  ) {
-    return `This action updates a #${id} reportsProductsZone`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} reportsProductsZone`;
+  async homologueUnits(dto: HomologueUnitsDto, employeeId: number) {
+    try {
+      await this.reportsProductsZoneModel.update(
+        {
+          homologatorEmployeeId: employeeId,
+        },
+        {
+          where: {
+            productsZoneId: _.map(dto.products, 'id'),
+          },
+        },
+      );
+      return {};
+    } catch (e) {
+      this.logger.error('Units could not be homologue', e);
+    }
   }
 }
